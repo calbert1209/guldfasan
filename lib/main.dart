@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:guldfasan/model/app_state.dart';
-import 'package:guldfasan/widget/home_page.dart';
+import 'package:guldfasan/app_state.dart';
+import 'package:guldfasan/widgets/home_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  int initValue = await Future.delayed(Duration(milliseconds: 4000), () => 0);
   runApp(
     MultiProvider(
       providers: [
