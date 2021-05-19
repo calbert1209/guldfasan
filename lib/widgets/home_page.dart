@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:guldfasan/app_state.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/widgets/crypto_collection_display.dart';
@@ -15,11 +16,17 @@ class HomePage extends StatelessWidget {
     final Map<String, double> prices = {"BTC": 543219.77, "ETH": 35000.45};
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(
+          title,
+          style: GoogleFonts.rajdhani(
+            textStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 32),
+          ),
+        ),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.only(top: 12.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children:
               appState.portfolio.map((CryptoPositionCollection collection) {
