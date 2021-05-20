@@ -6,7 +6,7 @@ import 'package:guldfasan/widgets/crypto_collection_display.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({Key key, this.title}) : super(key: key);
+  HomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -32,7 +32,7 @@ class HomePage extends StatelessWidget {
               appState.portfolio.map((CryptoPositionCollection collection) {
             return CryptoCollectionDisplay(
               collection: collection,
-              currentPrice: prices[collection.symbol],
+              currentPrice: prices[collection.symbol]!,
             );
           }).toList(),
         ),

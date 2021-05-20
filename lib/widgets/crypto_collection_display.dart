@@ -4,7 +4,7 @@ import 'package:guldfasan/models/position.dart';
 
 class CryptoCollectionDisplay extends StatelessWidget {
   CryptoCollectionDisplay(
-      {@required this.collection, @required this.currentPrice});
+      {required this.collection, required this.currentPrice});
 
   final CryptoPositionCollection collection;
   final double currentPrice;
@@ -43,7 +43,8 @@ class CryptoCollectionDisplay extends StatelessWidget {
 }
 
 class CryptoAssetPosition extends StatelessWidget {
-  CryptoAssetPosition({Key key, this.position, this.currentPrice});
+  CryptoAssetPosition(
+      {Key? key, required this.position, required this.currentPrice});
 
   final CryptoPosition position;
   final double currentPrice;
@@ -76,7 +77,7 @@ class CryptoAssetPosition extends StatelessWidget {
 }
 
 class FlexiblePriceCell extends StatelessWidget {
-  FlexiblePriceCell({this.color = Colors.black, @required this.text});
+  FlexiblePriceCell({this.color = Colors.black, required this.text});
 
   final Color color;
   final String text;

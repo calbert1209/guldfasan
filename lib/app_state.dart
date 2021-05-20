@@ -12,7 +12,7 @@ class AppState with ChangeNotifier {
             CryptoPositionCollection(symbol: entry.symbol, positions: []);
       }
 
-      map[entry.symbol].positions.add(entry.toPosition());
+      map[entry.symbol]!.positions.add(entry.toPosition());
       return map;
     });
     return map.values;
@@ -23,10 +23,10 @@ class AppState with ChangeNotifier {
 
 class PortfolioEntry {
   PortfolioEntry({
-    @required this.symbol,
-    @required this.units,
-    @required this.price,
-    @required this.dateTime,
+    required this.symbol,
+    required this.units,
+    required this.price,
+    required this.dateTime,
   });
 
   final String symbol;

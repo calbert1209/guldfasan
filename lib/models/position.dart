@@ -1,8 +1,6 @@
-import 'package:flutter/material.dart';
-
 class CryptoPosition {
   CryptoPosition(
-      {@required this.units, @required this.price, @required this.dateTime});
+      {required this.units, required this.price, required this.dateTime});
 
   final double units;
   final double price;
@@ -12,7 +10,7 @@ class CryptoPosition {
 }
 
 class CryptoPositionCollection {
-  CryptoPositionCollection({@required this.symbol, @required this.positions});
+  CryptoPositionCollection({required this.symbol, required this.positions});
 
   final String symbol;
   final List<CryptoPosition> positions;
