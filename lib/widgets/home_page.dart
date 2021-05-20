@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:guldfasan/app_state.dart';
 import 'package:guldfasan/models/position.dart';
-import 'package:guldfasan/widgets/crypto_collection_display.dart';
+import 'package:guldfasan/widgets/position_collection_display.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
@@ -28,9 +28,8 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children:
-              appState.portfolio.map((CryptoPositionCollection collection) {
-            return CryptoCollectionDisplay(
+          children: appState.portfolio.map((PositionCollection collection) {
+            return PositionCollectionDisplay(
               collection: collection,
               currentPrice: prices[collection.symbol]!,
             );

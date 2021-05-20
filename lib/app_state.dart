@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
 
 class AppState with ChangeNotifier {
-  static Iterable<CryptoPositionCollection> _collatePortfolio() {
+  static Iterable<PositionCollection> _collatePortfolio() {
     var map = _dummyEntriesJson
         .map((entry) => PortfolioEntry.fromJson(entry))
-        .fold<Map<String, CryptoPositionCollection>>(
-            Map<String, CryptoPositionCollection>(), (map, entry) {
+        .fold<Map<String, PositionCollection>>(
+            Map<String, PositionCollection>(), (map, entry) {
       if (!map.containsKey(entry.symbol)) {
         map[entry.symbol] =
-            CryptoPositionCollection(symbol: entry.symbol, positions: []);
+            PositionCollection(symbol: entry.symbol, positions: []);
       }
 
       map[entry.symbol]!.positions.add(entry.toPosition());
@@ -18,7 +18,7 @@ class AppState with ChangeNotifier {
     return map.values;
   }
 
-  List<CryptoPositionCollection> portfolio = _collatePortfolio().toList();
+  List<PositionCollection> portfolio = _collatePortfolio().toList();
 }
 
 class PortfolioEntry {
@@ -50,8 +50,8 @@ class PortfolioEntry {
         'date-time': this.dateTime.toIso8601String(),
       };
 
-  CryptoPosition toPosition() =>
-      CryptoPosition(units: units, price: price, dateTime: dateTime);
+  Position toPosition() =>
+      Position(units: units, price: price, dateTime: dateTime);
 }
 
 Iterable<Map<String, dynamic>> _dummyEntriesJson = [

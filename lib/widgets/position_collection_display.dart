@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:guldfasan/models/position.dart';
 
-class CryptoCollectionDisplay extends StatelessWidget {
-  CryptoCollectionDisplay(
+class PositionCollectionDisplay extends StatelessWidget {
+  PositionCollectionDisplay(
       {required this.collection, required this.currentPrice});
 
-  final CryptoPositionCollection collection;
+  final PositionCollection collection;
   final double currentPrice;
 
   @override
@@ -31,8 +31,8 @@ class CryptoCollectionDisplay extends StatelessWidget {
             ],
           ),
         ),
-        ...this.collection.positions.map((CryptoPosition position) {
-          return CryptoAssetPosition(
+        ...this.collection.positions.map((Position position) {
+          return PositionDisplay(
             position: position,
             currentPrice: currentPrice,
           );
@@ -42,11 +42,11 @@ class CryptoCollectionDisplay extends StatelessWidget {
   }
 }
 
-class CryptoAssetPosition extends StatelessWidget {
-  CryptoAssetPosition(
+class PositionDisplay extends StatelessWidget {
+  PositionDisplay(
       {Key? key, required this.position, required this.currentPrice});
 
-  final CryptoPosition position;
+  final Position position;
   final double currentPrice;
 
   @override
