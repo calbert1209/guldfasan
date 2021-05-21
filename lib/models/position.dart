@@ -1,11 +1,32 @@
 class Position {
-  Position({required this.units, required this.price, required this.dateTime});
+  Position(
+      {required this.symbol,
+      required this.units,
+      required this.price,
+      required this.dateTime});
 
+  final String symbol;
   final double units;
   final double price;
   final DateTime dateTime;
 
-  double profitOrLoss(double current) => current - price;
+  factory Position.fromJson(Map<String, dynamic> json) {
+    return Position(
+      symbol: json["symbol"] as String,
+      units: json["units"] as double,
+      price: json["price"] as double,
+      dateTime: DateTime.parse(json["date-time"] as String),
+    );
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'symbol': this.symbol,
+        'units': this.units,
+        'price': this.price,
+        'date-time': this.dateTime.toIso8601String(),
+      };
+
+  double profitOrLoss(double current) => (current - price) * units;
 }
 
 class PositionCollection {
