@@ -6,6 +6,7 @@ import 'package:guldfasan/models/position.dart';
 void main() {
   group('Position', () {
     final position = Position(
+      id: 777,
       symbol: 'BTC',
       units: 1.0,
       price: 5.0,
@@ -27,10 +28,34 @@ void main() {
     group('byPurchasePrice', () {
       var now = DateTime.now();
       var positions = [
-        Position(symbol: 'BTC', units: 1.0, price: 10.0, dateTime: now),
-        Position(symbol: 'BTC', units: 1.0, price: 11.0, dateTime: now),
-        Position(symbol: 'BTC', units: 1.0, price: 9.0, dateTime: now),
-        Position(symbol: 'BTC', units: 1.0, price: 12.5, dateTime: now),
+        Position(
+          id: 100,
+          symbol: 'BTC',
+          units: 1.0,
+          price: 10.0,
+          dateTime: now,
+        ),
+        Position(
+          id: 101,
+          symbol: 'BTC',
+          units: 1.0,
+          price: 11.0,
+          dateTime: now,
+        ),
+        Position(
+          id: 102,
+          symbol: 'BTC',
+          units: 1.0,
+          price: 9.0,
+          dateTime: now,
+        ),
+        Position(
+          id: 103,
+          symbol: 'BTC',
+          units: 1.0,
+          price: 12.5,
+          dateTime: now,
+        ),
       ];
       var collection = PositionCollection(symbol: 'BTC', positions: positions);
       test('should return new instance', () {

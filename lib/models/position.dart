@@ -1,10 +1,12 @@
 class Position {
   Position(
-      {required this.symbol,
+      {required this.id,
+      required this.symbol,
       required this.units,
       required this.price,
       required this.dateTime});
 
+  final int id;
   final String symbol;
   final double units;
   final double price;
@@ -12,6 +14,7 @@ class Position {
 
   factory Position.fromJson(Map<String, dynamic> json) {
     return Position(
+      id: json["id"] as int,
       symbol: json["symbol"] as String,
       units: json["units"] as double,
       price: json["price"] as double,
@@ -20,6 +23,7 @@ class Position {
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': this.id,
         'symbol': this.symbol,
         'units': this.units,
         'price': this.price,
