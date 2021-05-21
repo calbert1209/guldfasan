@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
+import 'package:guldfasan/services/db.dart';
 
 class AppState with ChangeNotifier {
+  AppState(this.dbService);
+
+  final DatabaseService dbService;
+
   static Iterable<PositionCollection> _collatePortfolio() {
     var map = _dummyEntriesJson
-        .map((entry) => Position.fromJson(entry))
+        .map((entry) => Position.fromMap(entry))
         .fold<Map<String, PositionCollection>>(
             Map<String, PositionCollection>(), (map, entry) {
       if (!map.containsKey(entry.symbol)) {
@@ -40,4 +45,4 @@ Iterable<Map<String, dynamic>> _dummyEntriesJson = [
       units: 1.0,
       price: 30000,
       dateTime: DateTime(2018, 4, 20, 9, 30)),
-].map((it) => it.toJson());
+].map((it) => it.toMap());

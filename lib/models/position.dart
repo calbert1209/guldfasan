@@ -1,3 +1,12 @@
+class PositionKey {
+  static const tablePosition = 'position';
+  static const id = '_id';
+  static const symbol = 'symbol';
+  static const units = 'units';
+  static const price = 'price';
+  static const dateTime = 'datetime';
+}
+
 class Position {
   Position(
       {required this.id,
@@ -12,22 +21,22 @@ class Position {
   final double price;
   final DateTime dateTime;
 
-  factory Position.fromJson(Map<String, dynamic> json) {
+  factory Position.fromMap(Map<String, dynamic> json) {
     return Position(
-      id: json["id"] as int,
-      symbol: json["symbol"] as String,
-      units: json["units"] as double,
-      price: json["price"] as double,
-      dateTime: DateTime.parse(json["date-time"] as String),
+      id: json[{PositionKey.id}] as int,
+      symbol: json[PositionKey.symbol] as String,
+      units: json[PositionKey.units] as double,
+      price: json[PositionKey.price] as double,
+      dateTime: DateTime.parse(json[PositionKey.dateTime] as String),
     );
   }
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': this.id,
-        'symbol': this.symbol,
-        'units': this.units,
-        'price': this.price,
-        'date-time': this.dateTime.toIso8601String(),
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        PositionKey.id: this.id,
+        PositionKey.symbol: this.symbol,
+        PositionKey.units: this.units,
+        PositionKey.price: this.price,
+        PositionKey.dateTime: this.dateTime.toIso8601String(),
       };
 
   double profitOrLoss(double current) => (current - price) * units;
