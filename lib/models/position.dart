@@ -23,7 +23,7 @@ class Position {
 
   factory Position.fromMap(Map<String, dynamic> json) {
     return Position(
-      id: json[{PositionKey.id}] as int,
+      id: json[PositionKey.id] as int,
       symbol: json[PositionKey.symbol] as String,
       units: json[PositionKey.units] as double,
       price: json[PositionKey.price] as double,
