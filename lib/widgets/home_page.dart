@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:guldfasan/app_state.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/widgets/portfolio.dart';
@@ -17,8 +16,10 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           title,
-          style: GoogleFonts.rajdhani(
-            textStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 32),
+          style: TextStyle(
+            fontFamily: 'Rajdhani',
+            fontWeight: FontWeight.w700,
+            fontSize: 32,
           ),
         ),
       ),
