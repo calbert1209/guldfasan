@@ -7,9 +7,9 @@ import 'package:sqflite/sqflite.dart';
 
 class DatabaseService {
   static final String _tableName = PositionKey.tablePosition;
-  DatabaseService._(this._database);
 
-  final Database _database;
+  late Database _database;
+  bool _isOpen = false;
 
   static _onCreate(Database db, int version) async {
     final String _createTable = '''
@@ -36,7 +36,15 @@ CREATE TABLE $_tableName(
     return batch.commit(continueOnError: true);
   }
 
-  static Future<DatabaseService> initialize() async {
+  Future<void> _ensureOpened() {
+    if (_isOpen) {
+      return Future.value();
+    }
+
+    return _lazyInitialize();
+  }
+
+  Future<void> _lazyInitialize() async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'guldfasan.db');
 
@@ -55,19 +63,18 @@ CREATE TABLE $_tableName(
       version: 1,
     );
 
-    return DatabaseService._(database);
+    this._database = database;
+    this._isOpen = true;
+    return;
   }
 
   Future<int> insert(Position position) async {
+    await _ensureOpened();
     return this._database.insert(_tableName, position.toMap());
   }
 
-  Future<List<Map<String, dynamic>>> queryAll() {
+  Future<List<Map<String, dynamic>>> queryAll() async {
+    await _ensureOpened();
     return this._database.query(_tableName);
   }
-
-  // Future<List<Object?>> batchInsert(Iterable<Position> positions) async {
-  //   final positionMaps = positions.map((p) => p.toMap());
-  //   return DatabaseService._batchInsert(this._database, positionMaps);
-  // }
 }

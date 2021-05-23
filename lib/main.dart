@@ -6,12 +6,12 @@ import 'package:guldfasan/widgets/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  var dbService = await DatabaseService.initialize();
-  runApp(MyApp(dbService));
+  var dbService = DatabaseService();
+  runApp(App(dbService));
 }
 
-class MyApp extends StatelessWidget {
-  MyApp(this._dbService);
+class App extends StatelessWidget {
+  App(this._dbService);
 
   final DatabaseService _dbService;
 
