@@ -59,19 +59,19 @@ Iterable<Map<String, dynamic>> kDummyEntriesJson = [
   Position(
       id: 0,
       symbol: 'BTC',
-      units: 1.0,
-      price: 400000,
-      dateTime: DateTime(2019, 4, 1, 9, 30)),
+      units: 0.00021472,
+      price: 6526644,
+      dateTime: DateTime(2021, 4, 13, 21, 18)),
   Position(
       id: 1,
       symbol: 'BTC',
-      units: 1.0,
-      price: 600000,
-      dateTime: DateTime(2020, 12, 12, 10, 30)),
+      units: 0.00016224,
+      price: 6197389,
+      dateTime: DateTime(2021, 5, 11, 22, 43)),
   Position(
       id: 2,
       symbol: 'ETH',
-      units: 1.0,
-      price: 30000,
-      dateTime: DateTime(2018, 4, 20, 9, 30)),
+      units: 0.00225697,
+      price: 443071,
+      dateTime: DateTime(2021, 5, 11, 22, 43)),
 ].map((it) => it.toMap());

@@ -66,7 +66,7 @@ class PositionDisplay extends StatelessWidget {
             color: diffColor,
           ),
           FlexiblePriceCell(
-            text: '${position.price.toStringAsFixed(4)}',
+            text: '${position.price.toStringAsFixed(0)}',
           ),
         ],
       ),

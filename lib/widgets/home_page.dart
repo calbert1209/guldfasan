@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:flutter/material.dart';
 import 'package:guldfasan/app_state.dart';
 import 'package:guldfasan/models/position.dart';
@@ -23,19 +25,41 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-      body: FutureBuilder(
-        future: appState.portfolio(),
-        builder: (BuildContext context,
-            AsyncSnapshot<Iterable<PositionCollection>> snapshot) {
-          if (snapshot.hasError) {
-            return Text(
-              snapshot.error.toString(),
-            );
-          } else if (snapshot.hasData) {
-            return Portfolio(snapshot.data!);
-          } else {
-            return CircularProgressIndicator();
-          }
+      body: Column(
+        children: [
+          FutureBuilder(
+            future: appState.portfolio(),
+            builder: (BuildContext context,
+                AsyncSnapshot<Iterable<PositionCollection>> snapshot) {
+              if (snapshot.hasError) {
+                return Text(
+                  snapshot.error.toString(),
+                );
+              } else if (snapshot.hasData) {
+                return PortfolioStreamBuilder(snapshot.data!);
+              } else {
+                return CircularProgressIndicator();
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SillyStreamBuilder extends StatelessWidget {
+  SillyStreamBuilder(this.receivePort);
+
+  final ReceivePort receivePort;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: StreamBuilder(
+        stream: receivePort,
+        builder: (context, snapshot) {
+          return Text(snapshot.hasData ? '${snapshot.data}' : '?');
         },
       ),
     );
