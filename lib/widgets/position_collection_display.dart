@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
+import 'package:guldfasan/pages/postion_details_page.dart';
 import 'package:intl/intl.dart';
 
 class PositionCollectionDisplay extends StatelessWidget {
@@ -85,7 +86,13 @@ class PositionDisplay extends StatelessWidget {
     final dateString = dateFormat.format(position.dateTime);
     return InkWell(
       onTap: () {
-        print(position.toMap().toString());
+        Navigator.push<Position>(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PositionDetailsPage(
+                    postion: position,
+                  )),
+        ).then((data) => print(data?.toMap().toString()));
       },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 12.0),
