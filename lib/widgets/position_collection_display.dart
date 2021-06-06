@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:guldfasan/app_state.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class PositionCollectionDisplay extends StatelessWidget {
   PositionCollectionDisplay(
@@ -17,20 +15,9 @@ class PositionCollectionDisplay extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 8.0),
-          child: Row(
-            children: [
-              Text(
-                collection.symbol,
-                style: TextStyle(
-                  fontFamily: 'Rajdhani',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 32,
-                ),
-              ),
-            ],
-          ),
+        Header(
+          symbol: collection.symbol,
+          currentPrice: currentPrice,
         ),
         ...this.collection.positions.map((Position position) {
           return PositionDisplay(
@@ -39,6 +26,41 @@ class PositionCollectionDisplay extends StatelessWidget {
           );
         }).toList(),
       ],
+    );
+  }
+}
+
+class Header extends StatelessWidget {
+  Header({required this.symbol, required this.currentPrice});
+
+  final String symbol;
+  final double currentPrice;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            symbol,
+            style: TextStyle(
+              fontFamily: 'Rajdhani',
+              fontWeight: FontWeight.w700,
+              fontSize: 32,
+            ),
+          ),
+          Text(
+            currentPrice.toStringAsFixed(0),
+            style: TextStyle(
+              fontFamily: 'KoBo',
+              fontWeight: FontWeight.w300,
+              fontSize: 32,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -59,38 +81,33 @@ class PositionDisplay extends StatelessWidget {
     } else if (diff > 0) {
       diffColor = Colors.green;
     }
-    final dateFormat = DateFormat.yMd('en_us').add_Hm();
+    final dateFormat = DateFormat.yMd('en_us');
     final dateString = dateFormat.format(position.dateTime);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              FlexiblePriceCell(
-                text: dateString,
-                textAlign: TextAlign.left,
-                fontSize: 20.0,
-                color: Colors.grey,
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              FlexiblePriceCell(
-                text: '${(diff).abs().toStringAsFixed(4)}',
-                color: diffColor,
-              ),
-              FlexiblePriceCell(
-                text: '${position.price.toStringAsFixed(0)}',
-              ),
-              FlexiblePriceCell(
-                text: '${currentPrice.toStringAsFixed(0)}',
-              ),
-            ],
-          ),
-        ],
+    return InkWell(
+      onTap: () {
+        print(position.toMap().toString());
+      },
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 12.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                FlexiblePriceCell(
+                  text: dateString,
+                  textAlign: TextAlign.left,
+                  fontSize: 20.0,
+                  color: Colors.grey,
+                ),
+                FlexiblePriceCell(
+                  text: '${(diff).abs().toStringAsFixed(4)}',
+                  color: diffColor,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
