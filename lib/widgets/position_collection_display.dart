@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:guldfasan/app_state.dart';
 import 'package:guldfasan/models/position.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class PositionCollectionDisplay extends StatelessWidget {
   PositionCollectionDisplay(
@@ -56,17 +59,36 @@ class PositionDisplay extends StatelessWidget {
     } else if (diff > 0) {
       diffColor = Colors.green;
     }
+    final dateFormat = DateFormat.yMd('en_us').add_Hm();
+    final dateString = dateFormat.format(position.dateTime);
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+      child: Column(
         children: [
-          FlexiblePriceCell(
-            text: '${(diff).abs().toStringAsFixed(4)}',
-            color: diffColor,
+          Row(
+            children: [
+              FlexiblePriceCell(
+                text: dateString,
+                textAlign: TextAlign.left,
+                fontSize: 20.0,
+                color: Colors.grey,
+              ),
+            ],
           ),
-          FlexiblePriceCell(
-            text: '${position.price.toStringAsFixed(0)}',
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              FlexiblePriceCell(
+                text: '${(diff).abs().toStringAsFixed(4)}',
+                color: diffColor,
+              ),
+              FlexiblePriceCell(
+                text: '${position.price.toStringAsFixed(0)}',
+              ),
+              FlexiblePriceCell(
+                text: '${currentPrice.toStringAsFixed(0)}',
+              ),
+            ],
           ),
         ],
       ),
@@ -75,10 +97,17 @@ class PositionDisplay extends StatelessWidget {
 }
 
 class FlexiblePriceCell extends StatelessWidget {
-  FlexiblePriceCell({this.color = Colors.black, required this.text});
+  FlexiblePriceCell({
+    required this.text,
+    this.color = Colors.black,
+    this.textAlign = TextAlign.right,
+    this.fontSize = 24.0,
+  });
 
   final Color color;
   final String text;
+  final TextAlign textAlign;
+  final double fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -87,11 +116,11 @@ class FlexiblePriceCell extends StatelessWidget {
       flex: 1,
       child: Text(
         text,
-        textAlign: TextAlign.right,
+        textAlign: textAlign,
         style: TextStyle(
           fontFamily: 'KoHo',
           fontWeight: FontWeight.w300,
-          fontSize: 24.0,
+          fontSize: fontSize,
           letterSpacing: -0.6,
           color: color,
         ),

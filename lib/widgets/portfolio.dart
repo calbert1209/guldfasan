@@ -21,7 +21,6 @@ class PortfolioStreamBuilder extends StatelessWidget {
           print(snapshot.error);
         }
         if (snapshot.hasData) {
-          print(snapshot.data);
           priceData = snapshot.data;
           timestamp = DateTime.now().toIso8601String();
         }
@@ -32,6 +31,7 @@ class PortfolioStreamBuilder extends StatelessWidget {
               child: Text('last updated: $timestamp'),
             ),
             Portfolio(_portfolio, priceData),
+            SillyPushPopExample()
           ],
         );
       },
@@ -58,6 +58,74 @@ class Portfolio extends StatelessWidget {
             currentPrice: _prices[collection.symbol]!.toDouble(),
           );
         }).toList(),
+      ),
+    );
+  }
+}
+
+// :::: example of Navigator push / pop with results ::::::::::::::::::::::::::
+
+class SillyPushPopExample extends StatelessWidget {
+  const SillyPushPopExample({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        // A pushed Route can return some value
+        // here its a string
+        // this value is return as a second arg in
+        // Navigator.pop() below
+        Navigator.push<String>(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MyContainer(),
+          ),
+        ).then((someText) => print(someText));
+      },
+      child: Text("Push Route to Stack"),
+    );
+  }
+}
+
+class MyPage extends StatelessWidget {
+  MyPage();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: MyContainer(),
+    );
+  }
+}
+
+class MyContainer extends StatelessWidget {
+  const MyContainer({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ElevatedButton(
+              child: const Text('Pop Route from Stack'),
+              // the future created by Navigator.push() will resolve with
+              // the 2nd arg given to Navigator.pop() here.
+              onPressed: () => Navigator.pop(
+                context,
+                DateTime.now().toIso8601String(),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
