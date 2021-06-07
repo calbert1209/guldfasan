@@ -90,7 +90,8 @@ class PositionDisplay extends StatelessWidget {
           context,
           MaterialPageRoute(
               builder: (context) => PositionDetailsPage(
-                    postion: position,
+                    position: position,
+                    currentPrice: currentPrice,
                   )),
         ).then((data) => print(data?.toMap().toString()));
       },
@@ -126,27 +127,36 @@ class FlexiblePriceCell extends StatelessWidget {
     this.color = Colors.black,
     this.textAlign = TextAlign.right,
     this.fontSize = 24.0,
+    this.padding = EdgeInsets.zero,
+    this.family = "KoHo",
+    this.weight = FontWeight.w300,
   });
 
   final Color color;
   final String text;
   final TextAlign textAlign;
   final double fontSize;
+  final EdgeInsets padding;
+  final String family;
+  final FontWeight weight;
 
   @override
   Widget build(BuildContext context) {
     return Flexible(
       fit: FlexFit.tight,
       flex: 1,
-      child: Text(
-        text,
-        textAlign: textAlign,
-        style: TextStyle(
-          fontFamily: 'KoHo',
-          fontWeight: FontWeight.w300,
-          fontSize: fontSize,
-          letterSpacing: -0.6,
-          color: color,
+      child: Padding(
+        padding: padding,
+        child: Text(
+          text,
+          textAlign: textAlign,
+          style: TextStyle(
+            fontFamily: 'KoHo',
+            fontWeight: weight,
+            fontSize: fontSize,
+            letterSpacing: -0.6,
+            color: color,
+          ),
         ),
       ),
     );

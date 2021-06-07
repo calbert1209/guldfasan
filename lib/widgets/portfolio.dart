@@ -28,7 +28,13 @@ class PortfolioStreamBuilder extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Text('last updated: $timestamp'),
+              child: Text(
+                'last updated: $timestamp',
+                style: TextStyle(
+                  fontFamily: 'Rajdhani',
+                  color: Colors.grey,
+                ),
+              ),
             ),
             Portfolio(_portfolio, priceData),
           ],
