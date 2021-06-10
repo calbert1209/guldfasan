@@ -16,12 +16,15 @@ class HomePage extends StatelessWidget {
     final appState = Provider.of<AppState>(context);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.amber.shade700,
         title: Text(
           title,
           style: TextStyle(
             fontFamily: 'Rajdhani',
             fontWeight: FontWeight.w700,
             fontSize: 32,
+            color: Colors.amber.shade700,
           ),
         ),
       ),

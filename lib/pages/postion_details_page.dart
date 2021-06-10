@@ -12,8 +12,12 @@ class PositionDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.amber.shade700,
+          ),
           onPressed: () => Navigator.pop(
             context,
             this.position,
@@ -25,6 +29,7 @@ class PositionDetailsPage extends StatelessWidget {
             fontFamily: 'Rajdhani',
             fontWeight: FontWeight.w700,
             fontSize: 32,
+            color: Colors.amber.shade700,
           ),
         ),
       ),
@@ -33,9 +38,13 @@ class PositionDetailsPage extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           DetailsHeader(position: position, currentPrice: currentPrice),
-          SectionLabel(text: 'Purchase Date'),
+          SectionLabel(
+            text: 'Purchase Date',
+          ),
           PurchaseDateLabel(dateTime: position.dateTime),
-          SectionLabel(text: 'Value at Purchase'),
+          SectionLabel(
+            text: 'Value at Purchase',
+          ),
           PurchaseValue(position: position),
           PurchaseValueBreakDown(position: position)
         ],
@@ -60,11 +69,11 @@ class PurchaseValue extends StatelessWidget {
         Padding(
           padding: EdgeInsets.all(8.0),
           child: Text(
-            valueAtPurchase.toStringAsFixed(6),
+            valueAtPurchase.toStringAsFixed(3),
             style: TextStyle(
               fontFamily: 'KoHo',
               fontWeight: FontWeight.w500,
-              fontSize: 42.0,
+              fontSize: 40.0,
             ),
           ),
         ),
@@ -109,7 +118,7 @@ class PurchaseValueBreakDown extends StatelessWidget {
           style: TextStyle(
             fontFamily: 'KoHo',
             fontWeight: FontWeight.w300,
-            fontSize: 12.0,
+            fontSize: 20.0,
             color: Colors.grey,
           ),
         );
@@ -136,7 +145,7 @@ class SectionLabel extends StatelessWidget {
             text,
             style: const TextStyle(
               fontFamily: 'Rajdhani',
-              fontWeight: FontWeight.w300,
+              fontWeight: FontWeight.w700,
               fontSize: 24.0,
             ),
           ),
@@ -189,7 +198,7 @@ class DetailsHeader extends StatelessWidget {
 
   final String family = "KoHo";
   final double size = 32.0;
-  final EdgeInsets padding = EdgeInsets.all(8.0);
+  final EdgeInsets padding = EdgeInsets.fromLTRB(8.0, 32.0, 8.0, 8.0);
 
   @override
   Widget build(BuildContext context) {

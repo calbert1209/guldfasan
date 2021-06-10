@@ -78,9 +78,9 @@ class PositionDisplay extends StatelessWidget {
     final diff = (currentPrice - position.price) * position.units;
     var diffColor = Colors.black;
     if (diff < 0) {
-      diffColor = Colors.red;
+      diffColor = Color.fromARGB(204, 217, 45, 11);
     } else if (diff > 0) {
-      diffColor = Colors.green;
+      diffColor = Color.fromARGB(204, 141, 217, 87);
     }
     final dateFormat = DateFormat.yMd('en_us');
     final dateString = dateFormat.format(position.dateTime);
@@ -89,10 +89,11 @@ class PositionDisplay extends StatelessWidget {
         Navigator.push<Position>(
           context,
           MaterialPageRoute(
-              builder: (context) => PositionDetailsPage(
-                    position: position,
-                    currentPrice: currentPrice,
-                  )),
+            builder: (context) => PositionDetailsPage(
+              position: position,
+              currentPrice: currentPrice,
+            ),
+          ),
         ).then((data) => print(data?.toMap().toString()));
       },
       child: Padding(
