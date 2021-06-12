@@ -16,6 +16,22 @@ void main() async {
   runApp(App(dbService));
 }
 
+/*
+Rajdhani
+32 / 700 / amber700
+32 / 700 / default
+24 / 700 / default
+14 / 700 / default
+14 / default / grey
+
+KoHo
+42 / 500 / default
+40 / 500 / default
+32 / default / grey
+32 / 300 / default
+20 / 300 / grey
+ */
+
 class App extends StatelessWidget {
   App(this._dbService);
 

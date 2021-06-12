@@ -54,12 +54,18 @@ class PositionDetailsPage extends StatelessWidget {
 }
 
 class PurchaseValue extends StatelessWidget {
-  const PurchaseValue({
+  PurchaseValue({
     Key? key,
     required this.position,
   }) : super(key: key);
 
   final Position position;
+
+  final currencyFormatter = NumberFormat.simpleCurrency(
+    locale: "en-US",
+    name: "JPY",
+    decimalDigits: 3,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -69,22 +75,11 @@ class PurchaseValue extends StatelessWidget {
         Padding(
           padding: EdgeInsets.all(8.0),
           child: Text(
-            valueAtPurchase.toStringAsFixed(3),
+            currencyFormatter.format(valueAtPurchase),
             style: TextStyle(
               fontFamily: 'KoHo',
               fontWeight: FontWeight.w500,
               fontSize: 40.0,
-            ),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(
-            'JPY',
-            style: TextStyle(
-              fontFamily: 'KoHo',
-              fontWeight: FontWeight.w500,
-              fontSize: 42.0,
             ),
           ),
         ),
@@ -94,12 +89,17 @@ class PurchaseValue extends StatelessWidget {
 }
 
 class PurchaseValueBreakDown extends StatelessWidget {
-  const PurchaseValueBreakDown({
+  PurchaseValueBreakDown({
     Key? key,
     required this.position,
   }) : super(key: key);
 
   final Position position;
+
+  final currencyFormatter = NumberFormat.simpleCurrency(
+    locale: "en-US",
+    name: "JPY",
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +110,7 @@ class PurchaseValueBreakDown extends StatelessWidget {
         position.units.toString(),
         ' ${position.symbol}',
         ' @ ',
-        position.price.toString(),
+        currencyFormatter.format(position.price),
         ' ) ',
       ].map<Widget>((it) {
         return Text(
@@ -165,7 +165,7 @@ class PurchaseDateLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat.yMd('en_us').add_Hms();
+    final dateFormat = DateFormat("yyyy-MM-dd HH:mm");
     final dateString = dateFormat.format(dateTime);
 
     return Row(
@@ -196,6 +196,11 @@ class DetailsHeader extends StatelessWidget {
   final Position position;
   final double currentPrice;
 
+  final currencyFormatter = NumberFormat.simpleCurrency(
+    locale: "en-US",
+    name: "JPY",
+    decimalDigits: 3,
+  );
   final String family = "KoHo";
   final double size = 32.0;
   final EdgeInsets padding = EdgeInsets.fromLTRB(8.0, 32.0, 8.0, 8.0);
@@ -205,7 +210,7 @@ class DetailsHeader extends StatelessWidget {
     final totalProfit = (currentPrice - position.price) * position.units;
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Padding(
           padding: padding,
@@ -222,7 +227,7 @@ class DetailsHeader extends StatelessWidget {
         Padding(
           padding: padding,
           child: Text(
-            totalProfit.toStringAsFixed(3),
+            currencyFormatter.format(totalProfit),
             style: TextStyle(
               fontFamily: family,
               fontSize: size,

@@ -3,6 +3,13 @@ import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/pages/postion_details_page.dart';
 import 'package:intl/intl.dart';
 
+const _positionCollectionInsets = EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0);
+final String Function(dynamic number) _formatCurrency =
+    NumberFormat.simpleCurrency(
+  locale: "en-US",
+  name: "JPY",
+).format;
+
 class PositionCollectionDisplay extends StatelessWidget {
   PositionCollectionDisplay(
       {required this.collection, required this.currentPrice});
@@ -39,8 +46,8 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 8.0),
+    return Container(
+      padding: _positionCollectionInsets,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -53,7 +60,7 @@ class Header extends StatelessWidget {
             ),
           ),
           Text(
-            currentPrice.toStringAsFixed(0),
+            _formatCurrency(currentPrice),
             style: TextStyle(
               fontFamily: 'KoBo',
               fontWeight: FontWeight.w300,
@@ -72,18 +79,18 @@ class PositionDisplay extends StatelessWidget {
 
   final Position position;
   final double currentPrice;
+  final dateFormatter = DateFormat('yyyy-MM-dd');
 
   @override
   Widget build(BuildContext context) {
     final diff = (currentPrice - position.price) * position.units;
     var diffColor = Colors.black;
     if (diff < 0) {
-      diffColor = Color.fromARGB(204, 217, 45, 11);
+      diffColor = Colors.red.shade700;
     } else if (diff > 0) {
-      diffColor = Color.fromARGB(204, 141, 217, 87);
+      diffColor = Colors.lightGreen.shade700;
     }
-    final dateFormat = DateFormat.yMd('en_us');
-    final dateString = dateFormat.format(position.dateTime);
+    final dateString = dateFormatter.format(position.dateTime);
     return InkWell(
       onTap: () {
         Navigator.push<Position>(
@@ -96,26 +103,36 @@ class PositionDisplay extends StatelessWidget {
           ),
         ).then((data) => print(data?.toMap().toString()));
       },
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 12.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                FlexiblePriceCell(
-                  text: dateString,
-                  textAlign: TextAlign.left,
-                  fontSize: 20.0,
-                  color: Colors.grey,
-                ),
-                FlexiblePriceCell(
-                  text: '${(diff).abs().toStringAsFixed(4)}',
-                  color: diffColor,
-                ),
-              ],
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(
+              2.0,
             ),
-          ],
+          ),
+        ),
+        elevation: 0.5,
+        child: Padding(
+          padding: _positionCollectionInsets,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  FlexiblePriceCell(
+                    text: dateString,
+                    textAlign: TextAlign.left,
+                    fontSize: 20.0,
+                    color: Colors.grey,
+                  ),
+                  FlexiblePriceCell(
+                    text: '${_formatCurrency(diff)}',
+                    color: diffColor,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
