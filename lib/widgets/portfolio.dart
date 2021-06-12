@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:guldfasan/app_state.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/widgets/position_collection_display.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
+final _formatDate = DateFormat("yyyy-MM-dd HH:mm:ss").format;
 
 class PortfolioStreamBuilder extends StatelessWidget {
   PortfolioStreamBuilder(this._portfolio);
@@ -22,7 +25,7 @@ class PortfolioStreamBuilder extends StatelessWidget {
         }
         if (snapshot.hasData) {
           priceData = snapshot.data;
-          timestamp = DateTime.now().toIso8601String();
+          timestamp = _formatDate(DateTime.now());
         }
         return Column(
           children: [

@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:intl/intl.dart';
 
+final String Function(dynamic number) _formatDecimalCurrency =
+    NumberFormat.simpleCurrency(
+  locale: "en-US",
+  name: "JPY",
+  decimalDigits: 3,
+).format;
+
 class PositionDetailsPage extends StatelessWidget {
   PositionDetailsPage({required this.position, required this.currentPrice});
 
@@ -61,12 +68,6 @@ class PurchaseValue extends StatelessWidget {
 
   final Position position;
 
-  final currencyFormatter = NumberFormat.simpleCurrency(
-    locale: "en-US",
-    name: "JPY",
-    decimalDigits: 3,
-  );
-
   @override
   Widget build(BuildContext context) {
     final valueAtPurchase = position.units * position.price;
@@ -75,11 +76,12 @@ class PurchaseValue extends StatelessWidget {
         Padding(
           padding: EdgeInsets.all(8.0),
           child: Text(
-            currencyFormatter.format(valueAtPurchase),
+            _formatDecimalCurrency(valueAtPurchase),
             style: TextStyle(
               fontFamily: 'KoHo',
               fontWeight: FontWeight.w500,
               fontSize: 40.0,
+              color: Colors.brown.shade700,
             ),
           ),
         ),
@@ -96,10 +98,11 @@ class PurchaseValueBreakDown extends StatelessWidget {
 
   final Position position;
 
-  final currencyFormatter = NumberFormat.simpleCurrency(
+  final String Function(dynamic number) _formatCurrency =
+      NumberFormat.simpleCurrency(
     locale: "en-US",
     name: "JPY",
-  );
+  ).format;
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +113,7 @@ class PurchaseValueBreakDown extends StatelessWidget {
         position.units.toString(),
         ' ${position.symbol}',
         ' @ ',
-        currencyFormatter.format(position.price),
+        _formatCurrency(position.price),
         ' ) ',
       ].map<Widget>((it) {
         return Text(
@@ -119,7 +122,7 @@ class PurchaseValueBreakDown extends StatelessWidget {
             fontFamily: 'KoHo',
             fontWeight: FontWeight.w300,
             fontSize: 20.0,
-            color: Colors.grey,
+            color: Colors.brown.shade300,
           ),
         );
       }).toList(),
@@ -143,10 +146,11 @@ class SectionLabel extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 8.0),
           child: Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Rajdhani',
               fontWeight: FontWeight.w700,
               fontSize: 24.0,
+              color: Colors.brown.shade700,
             ),
           ),
         ),
@@ -165,8 +169,7 @@ class PurchaseDateLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat("yyyy-MM-dd HH:mm");
-    final dateString = dateFormat.format(dateTime);
+    final dateString = DateFormat("yyyy-MM-dd HH:mm").format(dateTime);
 
     return Row(
       children: [
@@ -177,7 +180,7 @@ class PurchaseDateLabel extends StatelessWidget {
             style: TextStyle(
               fontFamily: "KoHo",
               fontSize: 32.0,
-              color: Colors.grey,
+              color: Colors.brown.shade300,
             ),
           ),
         ),
@@ -196,11 +199,6 @@ class DetailsHeader extends StatelessWidget {
   final Position position;
   final double currentPrice;
 
-  final currencyFormatter = NumberFormat.simpleCurrency(
-    locale: "en-US",
-    name: "JPY",
-    decimalDigits: 3,
-  );
   final String family = "KoHo";
   final double size = 32.0;
   final EdgeInsets padding = EdgeInsets.fromLTRB(8.0, 32.0, 8.0, 8.0);
@@ -220,43 +218,24 @@ class DetailsHeader extends StatelessWidget {
               fontFamily: family,
               fontSize: size,
               fontWeight: FontWeight.w700,
-              color: Colors.black,
+              color: Colors.brown.shade700,
             ),
           ),
         ),
         Padding(
           padding: padding,
           child: Text(
-            currencyFormatter.format(totalProfit),
+            _formatDecimalCurrency(totalProfit),
             style: TextStyle(
               fontFamily: family,
               fontSize: size,
               fontWeight: FontWeight.w500,
-              color: totalProfit > 0 ? Colors.green : Colors.red,
+              color:
+                  totalProfit > 0 ? Colors.green.shade300 : Colors.red.shade900,
             ),
           ),
         ),
       ],
-    );
-  }
-}
-
-class MyContainer extends StatelessWidget {
-  const MyContainer({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[],
-        ),
-      ),
     );
   }
 }

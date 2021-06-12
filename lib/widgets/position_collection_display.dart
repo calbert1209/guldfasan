@@ -43,6 +43,7 @@ class Header extends StatelessWidget {
 
   final String symbol;
   final double currentPrice;
+  final _color = Colors.brown.shade700;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +58,7 @@ class Header extends StatelessWidget {
               fontFamily: 'Rajdhani',
               fontWeight: FontWeight.w700,
               fontSize: 32,
+              color: _color,
             ),
           ),
           Text(
@@ -65,6 +67,7 @@ class Header extends StatelessWidget {
               fontFamily: 'KoBo',
               fontWeight: FontWeight.w300,
               fontSize: 32,
+              color: _color,
             ),
           ),
         ],
@@ -74,23 +77,25 @@ class Header extends StatelessWidget {
 }
 
 class PositionDisplay extends StatelessWidget {
-  PositionDisplay(
-      {Key? key, required this.position, required this.currentPrice});
+  PositionDisplay({
+    Key? key,
+    required this.position,
+    required this.currentPrice,
+  }) : diff = (currentPrice - position.price) * position.units;
 
   final Position position;
   final double currentPrice;
-  final dateFormatter = DateFormat('yyyy-MM-dd');
+  final double diff;
+  final _formatDate = DateFormat('yyyy-MM-dd').format;
 
   @override
   Widget build(BuildContext context) {
-    final diff = (currentPrice - position.price) * position.units;
-    var diffColor = Colors.black;
+    var diffColor = Colors.brown.shade700;
     if (diff < 0) {
-      diffColor = Colors.red.shade700;
+      diffColor = Colors.red.shade900;
     } else if (diff > 0) {
-      diffColor = Colors.lightGreen.shade700;
+      diffColor = Colors.green.shade300;
     }
-    final dateString = dateFormatter.format(position.dateTime);
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
@@ -120,10 +125,10 @@ class PositionDisplay extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   FlexiblePriceCell(
-                    text: dateString,
+                    text: _formatDate(position.dateTime),
                     textAlign: TextAlign.left,
                     fontSize: 20.0,
-                    color: Colors.grey,
+                    color: Colors.brown.shade300,
                   ),
                   FlexiblePriceCell(
                     text: '${_formatCurrency(diff)}',

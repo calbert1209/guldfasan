@@ -50,21 +50,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
-class SillyStreamBuilder extends StatelessWidget {
-  SillyStreamBuilder(this.receivePort);
-
-  final ReceivePort receivePort;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: StreamBuilder(
-        stream: receivePort,
-        builder: (context, snapshot) {
-          return Text(snapshot.hasData ? '${snapshot.data}' : '?');
-        },
-      ),
-    );
-  }
-}
