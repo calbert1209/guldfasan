@@ -91,27 +91,27 @@ class PositionDisplay extends StatelessWidget {
       diffColor = Colors.lightGreen.shade700;
     }
     final dateString = dateFormatter.format(position.dateTime);
-    return InkWell(
-      onTap: () {
-        Navigator.push<Position>(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PositionDetailsPage(
-              position: position,
-              currentPrice: currentPrice,
-            ),
-          ),
-        ).then((data) => print(data?.toMap().toString()));
-      },
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(
-              2.0,
-            ),
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(
+            2.0,
           ),
         ),
-        elevation: 0.5,
+      ),
+      elevation: 0.5,
+      child: InkWell(
+        onTap: () {
+          Navigator.push<Position>(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PositionDetailsPage(
+                position: position,
+                currentPrice: currentPrice,
+              ),
+            ),
+          ).then((data) => print(data?.toMap().toString()));
+        },
         child: Padding(
           padding: _positionCollectionInsets,
           child: Column(
