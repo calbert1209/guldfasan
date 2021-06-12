@@ -3,12 +3,22 @@ import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/pages/postion_details_page.dart';
 import 'package:intl/intl.dart';
 
-const _positionCollectionInsets = EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0);
+const PositionCollectionInsets = EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0);
 final String Function(dynamic number) _formatCurrency =
     NumberFormat.simpleCurrency(
   locale: "en-US",
   name: "JPY",
 ).format;
+
+Color colorForSign(num value) {
+  if (value < 0) {
+    return Colors.red.shade900;
+  } else if (value > 0) {
+    return Colors.green.shade300;
+  } else {
+    return Colors.brown.shade700;
+  }
+}
 
 class PositionCollectionDisplay extends StatelessWidget {
   PositionCollectionDisplay(
@@ -48,7 +58,7 @@ class Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: _positionCollectionInsets,
+      padding: PositionCollectionInsets,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -66,7 +76,7 @@ class Header extends StatelessWidget {
             style: TextStyle(
               fontFamily: 'KoBo',
               fontWeight: FontWeight.w300,
-              fontSize: 32,
+              fontSize: 28,
               color: _color,
             ),
           ),
@@ -90,12 +100,7 @@ class PositionDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var diffColor = Colors.brown.shade700;
-    if (diff < 0) {
-      diffColor = Colors.red.shade900;
-    } else if (diff > 0) {
-      diffColor = Colors.green.shade300;
-    }
+    var diffColor = colorForSign(diff);
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
@@ -118,7 +123,7 @@ class PositionDisplay extends StatelessWidget {
           ).then((data) => print(data?.toMap().toString()));
         },
         child: Padding(
-          padding: _positionCollectionInsets,
+          padding: PositionCollectionInsets,
           child: Column(
             children: [
               Row(

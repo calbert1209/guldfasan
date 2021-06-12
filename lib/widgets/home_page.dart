@@ -1,5 +1,3 @@
-import 'dart:isolate';
-
 import 'package:flutter/material.dart';
 import 'package:guldfasan/app_state.dart';
 import 'package:guldfasan/models/position.dart';

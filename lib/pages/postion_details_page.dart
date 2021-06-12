@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
+import 'package:guldfasan/widgets/position_collection_display.dart';
 import 'package:intl/intl.dart';
 
 final String Function(dynamic number) _formatDecimalCurrency =
@@ -230,8 +231,7 @@ class DetailsHeader extends StatelessWidget {
               fontFamily: family,
               fontSize: size,
               fontWeight: FontWeight.w500,
-              color:
-                  totalProfit > 0 ? Colors.green.shade300 : Colors.red.shade900,
+              color: colorForSign(totalProfit),
             ),
           ),
         ),
