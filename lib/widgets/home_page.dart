@@ -47,6 +47,15 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          print("long time ago when we were fab!");
+        },
+      ),
     );
   }
 }
