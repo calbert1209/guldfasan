@@ -3,7 +3,18 @@ import 'dart:isolate';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
-void fetcher(SendPort sendPort) async {
+class FetchedMessage {
+  FetchedMessage({this.sendPort, this.prices, this.error});
+  final SendPort? sendPort;
+  final Map<String, int>? prices;
+  final String? error;
+
+  bool hasSendPort() => this.sendPort != null;
+  bool hasPrices() => this.prices != null;
+  bool hasError() => this.error != null;
+}
+
+Future<http.Response> _fetchCoinData() {
   final url = Uri.https(
     "api.coingecko.com",
     "/api/v3/simple/price",
@@ -13,23 +24,54 @@ void fetcher(SendPort sendPort) async {
       'include_last_updated_at': 'true'
     },
   );
+  return http.get(url);
+}
+
+void fetcher(SendPort toParent) async {
+  final fromParent = ReceivePort();
+  var duration = Duration(seconds: 5);
+  fromParent.listen((message) {
+    if (message is Duration) {
+      print('fetcher got msg: $message');
+      duration = message;
+    }
+  });
+  toParent.send(FetchedMessage(sendPort: fromParent.sendPort));
+
   while (true) {
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse =
-          convert.jsonDecode(response.body) as Map<String, dynamic>;
-      var btcJpy = jsonResponse["bitcoin"]?["jpy"] as int?;
-      var ethJpy = jsonResponse["ethereum"]?["jpy"] as int?;
-      var result = (btcJpy != null && ethJpy != null)
-          ? {'BTC': btcJpy, 'ETH': ethJpy}
-          : {'error': 'could not parse price data'};
-      sendPort.send(result);
-    } else {
-      print(response.toString());
-      sendPort.send(
-        {'error': 'request failed ${response.statusCode}'},
+    try {
+      var response = await _fetchCoinData();
+      if (response.statusCode == 200) {
+        var jsonResponse =
+            convert.jsonDecode(response.body) as Map<String, dynamic>;
+        var btcJpy = jsonResponse["bitcoin"]?["jpy"] as int?;
+        var ethJpy = jsonResponse["ethereum"]?["jpy"] as int?;
+        var result = (btcJpy != null && ethJpy != null)
+            ? FetchedMessage(
+                sendPort: fromParent.sendPort,
+                prices: {'BTC': btcJpy, 'ETH': ethJpy},
+              )
+            : FetchedMessage(
+                sendPort: fromParent.sendPort,
+                error: 'could not parse price data',
+              );
+        toParent.send(result);
+      } else {
+        print(response.toString());
+        toParent.send(
+          FetchedMessage(
+              sendPort: fromParent.sendPort,
+              error: 'request failed ${response.statusCode}'),
+        );
+      }
+    } catch (e) {
+      toParent.send(
+        FetchedMessage(
+          sendPort: fromParent.sendPort,
+          error: e.toString(),
+        ),
       );
     }
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(duration);
   }
 }
