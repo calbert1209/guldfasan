@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/app_state.dart';
 import 'package:guldfasan/models/position.dart';
-import 'package:guldfasan/widgets/portfolio.dart';
+import 'package:guldfasan/widgets/portfolio_stream_builder.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
@@ -39,7 +39,9 @@ class HomePage extends StatelessWidget {
               } else if (snapshot.hasData) {
                 return PortfolioStreamBuilder(snapshot.data!);
               } else {
-                return CircularProgressIndicator();
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
               }
             },
           ),
