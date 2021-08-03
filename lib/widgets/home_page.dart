@@ -26,7 +26,8 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-      body: Column(
+      body: ListView(
+        padding: EdgeInsets.only(bottom: 80.0),
         children: [
           FutureBuilder(
             future: appState.portfolio(),

@@ -52,22 +52,20 @@ class PortfolioStreamBuilder extends StatelessWidget {
             updateIsolateDuration(snapshot.data!.sendPort!);
           }
         }
-        return SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: Text(
-                  'last updated: $timestamp',
-                  style: TextStyle(
-                    fontFamily: 'Rajdhani',
-                    color: Colors.grey,
-                  ),
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: Text(
+                'last updated: $timestamp',
+                style: TextStyle(
+                  fontFamily: 'Rajdhani',
+                  color: Colors.grey,
                 ),
               ),
-              Portfolio(_portfolio, priceData),
-            ],
-          ),
+            ),
+            Portfolio(_portfolio, priceData),
+          ],
         );
       },
     );
