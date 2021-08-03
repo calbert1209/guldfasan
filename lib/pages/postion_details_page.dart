@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/widgets/position_collection_display.dart';
+import 'package:guldfasan/widgets/sub_page_scaffold.dart';
 import 'package:intl/intl.dart';
 
 final String Function(dynamic number) _formatDecimalCurrency =
@@ -18,30 +19,10 @@ class PositionDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.amber.shade700,
-          ),
-          onPressed: () => Navigator.pop(
-            context,
-            this.position,
-          ),
-        ),
-        title: Text(
-          "Position Details",
-          style: TextStyle(
-            fontFamily: 'Rajdhani',
-            fontWeight: FontWeight.w700,
-            fontSize: 32,
-            color: Colors.amber.shade700,
-          ),
-        ),
-      ),
-      body: Column(
+    return SubPageScaffold(
+      onCompleted: () => Navigator.pop(context, position),
+      title: "Position Details",
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[

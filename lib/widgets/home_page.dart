@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/app_state.dart';
 import 'package:guldfasan/models/position.dart';
+import 'package:guldfasan/pages/create_position_page.dart';
 import 'package:guldfasan/widgets/portfolio_stream_builder.dart';
 import 'package:provider/provider.dart';
 
@@ -54,7 +55,12 @@ class HomePage extends StatelessWidget {
           color: Colors.white,
         ),
         onPressed: () {
-          print("long time ago when we were fab!");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CreatePositionPage(),
+            ),
+          );
         },
       ),
     );
