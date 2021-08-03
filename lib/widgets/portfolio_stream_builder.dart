@@ -3,7 +3,6 @@ import 'dart:isolate';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
-import 'package:guldfasan/services/fetcher.dart';
 import 'package:guldfasan/widgets/portfolio.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -36,9 +35,9 @@ class PortfolioStreamBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
-    return StreamBuilder<FetchedMessage>(
-      stream: appState.receivePort.cast<FetchedMessage>(),
-      builder: (BuildContext context, AsyncSnapshot<FetchedMessage> snapshot) {
+    return StreamBuilder<dynamic>(
+      stream: appState.stream,
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         Map<String, int> priceData = {"BTC": -1, "ETH": -1};
         var timestamp = "not updated!";
         if (snapshot.hasError) {
@@ -53,20 +52,22 @@ class PortfolioStreamBuilder extends StatelessWidget {
             updateIsolateDuration(snapshot.data!.sendPort!);
           }
         }
-        return Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 16.0),
-              child: Text(
-                'last updated: $timestamp',
-                style: TextStyle(
-                  fontFamily: 'Rajdhani',
-                  color: Colors.grey,
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Text(
+                  'last updated: $timestamp',
+                  style: TextStyle(
+                    fontFamily: 'Rajdhani',
+                    color: Colors.grey,
+                  ),
                 ),
               ),
-            ),
-            Portfolio(_portfolio, priceData),
-          ],
+              Portfolio(_portfolio, priceData),
+            ],
+          ),
         );
       },
     );
