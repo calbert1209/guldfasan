@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/app_state.dart';
 import 'package:guldfasan/models/position.dart';
+import 'package:guldfasan/models/position_operation.dart';
 import 'package:guldfasan/pages/add_position_page.dart';
 import 'package:guldfasan/widgets/portfolio_stream_builder.dart';
 import 'package:provider/provider.dart';
@@ -55,14 +56,14 @@ class HomePage extends StatelessWidget {
           color: Colors.white,
         ),
         onPressed: () {
-          Navigator.push<Position>(
+          Navigator.push<PositionOperation>(
             context,
             MaterialPageRoute(
               builder: (context) => AddPositionPage(),
             ),
           ).then((result) {
             if (result != null) {
-              appState.addPosition(result);
+              appState.addPosition(result.position);
             }
           });
         },

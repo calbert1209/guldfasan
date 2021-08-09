@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
+import 'package:guldfasan/models/position_operation.dart';
 import 'package:guldfasan/widgets/sub_page_scaffold.dart';
 
 class AddPositionPage extends StatelessWidget {
@@ -170,13 +171,19 @@ class AddPositionFormState extends State<AddPositionForm> {
                 // show progress
                 // await persistance
                 // then pop
-                var alice = Position(
+                var added = Position(
                   dateTime: DateTime.parse(_dateController.text),
                   symbol: _dropdownValue,
                   units: double.parse(_unitsController.text),
                   price: double.parse(_unitPriceController.text),
                 );
-                Navigator.pop(context, alice);
+                Navigator.pop(
+                  context,
+                  PositionOperation(
+                    position: added,
+                    type: OperationType.create,
+                  ),
+                );
               }
             },
             child: const Text('Submit'),
