@@ -40,19 +40,18 @@ class AppState with ChangeNotifier {
 
   Future<int> addPosition(Position position) async {
     var nextIndex = await dbService.insert(position);
-    // var nextPosition = Position(
-    //   id: nextIndex,
-    //   symbol: position.symbol,
-    //   units: position.units,
-    //   price: position.price,
-    //   dateTime: position.dateTime,
-    // );
     notifyListeners();
     return nextIndex;
   }
 
   Future<int> deletePosition(int id) async {
     var result = await dbService.delete(id);
+    notifyListeners();
+    return result;
+  }
+
+  Future<int> updatePosition(Position position) async {
+    var result = await dbService.update(position);
     notifyListeners();
     return result;
   }

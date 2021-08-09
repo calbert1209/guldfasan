@@ -74,10 +74,23 @@ CREATE TABLE $_tableName(
   }
 
   Future<int> delete(int id) async {
+    await _ensureOpened();
     return _database.delete(
       _tableName,
       where: '${PositionKey.id} = ?',
       whereArgs: [id],
+    );
+  }
+
+  Future<int> update(Position position) async {
+    assert(position.id != null);
+
+    await _ensureOpened();
+    return _database.update(
+      _tableName,
+      position.toMap(),
+      where: '${PositionKey.id} = ?',
+      whereArgs: [position.id],
     );
   }
 
