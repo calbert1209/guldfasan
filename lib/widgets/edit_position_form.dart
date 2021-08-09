@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
-import 'package:guldfasan/models/position_operation.dart';
+
+typedef void OnUpdatedHandler(Position position);
 
 class EditPositionForm extends StatefulWidget {
-  const EditPositionForm({Key? key, this.position}) : super(key: key);
+  const EditPositionForm({
+    Key? key,
+    this.position,
+    required this.onUpdatedHandler,
+  }) : super(key: key);
 
   final Position? position;
+  final OnUpdatedHandler onUpdatedHandler;
 
   @override
   EditPositionFormState createState() => EditPositionFormState(position);
@@ -166,13 +172,14 @@ class EditPositionFormState extends State<EditPositionForm> {
                   units: double.parse(_unitsController.text),
                   price: double.parse(_priceController.text),
                 );
-                Navigator.pop(
-                  context,
-                  PositionOperation(
-                    position: added,
-                    type: OperationType.create,
-                  ),
-                );
+                widget.onUpdatedHandler(added);
+                // Navigator.pop(
+                //   context,
+                //   PositionOperation(
+                //     position: added,
+                //     type: OperationType.create,
+                //   ),
+                // );
               }
             },
             child: const Text('Submit'),

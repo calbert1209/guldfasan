@@ -128,8 +128,7 @@ class PositionDisplay extends StatelessWidget {
             if (data == null) return;
 
             if (data.type == OperationType.update) {
-              print("::: would update... :::");
-              print(data.position.toMap().toString());
+              appState.updatePosition(data.position);
             } else {
               var id = data.position.id;
               if (id != null) {

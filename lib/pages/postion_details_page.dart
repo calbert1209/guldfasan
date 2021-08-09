@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/models/position_operation.dart';
+import 'package:guldfasan/pages/edit_position_page.dart';
 import 'package:guldfasan/widgets/position_collection_display.dart';
 import 'package:guldfasan/widgets/sub_page_scaffold.dart';
 import 'package:intl/intl.dart';
@@ -29,6 +30,7 @@ class PositionDetailsPage extends StatelessWidget {
         ),
       ),
       title: "Position Details",
+      titleFontSize: 24,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -42,6 +44,24 @@ class PositionDetailsPage extends StatelessWidget {
         ],
       ),
       actions: [
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute<PositionOperation>(
+                builder: (context) => EditPositionPage(position: position),
+              ),
+            ).then((result) {
+              if (result != null && result.type == OperationType.update) {
+                Navigator.pop(context, result);
+              }
+            });
+          },
+          icon: Icon(
+            Icons.edit,
+            color: Colors.grey.shade700,
+          ),
+        ),
         IconButton(
           onPressed: () => Navigator.pop(
             context,

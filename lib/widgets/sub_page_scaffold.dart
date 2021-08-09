@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 
 class SubPageScaffold extends StatelessWidget {
-  SubPageScaffold(
-      {required this.onCompleted,
-      required this.title,
-      required this.child,
-      this.actions});
+  SubPageScaffold({
+    required this.onCompleted,
+    required this.title,
+    required this.child,
+    this.actions,
+    this.titleFontSize = 32,
+  });
 
   final VoidCallback onCompleted;
   final String title;
   final Widget child;
   final List<Widget>? actions;
+  final double titleFontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,7 @@ class SubPageScaffold extends StatelessWidget {
           style: TextStyle(
             fontFamily: 'Rajdhani',
             fontWeight: FontWeight.w700,
-            fontSize: 32,
+            fontSize: titleFontSize,
             color: Colors.amber.shade700,
           ),
         ),
