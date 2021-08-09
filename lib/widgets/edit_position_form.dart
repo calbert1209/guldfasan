@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
-import 'package:intl/intl.dart';
+import 'package:guldfasan/widgets/date_time_form_field.dart';
 
 typedef void OnUpdatedHandler(Position position);
 
@@ -43,83 +43,21 @@ class EditPositionFormState extends State<EditPositionForm> {
       key: _formKey,
       child: Column(
         children: <Widget>[
-          InkWell(
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: Icon(
-                    Icons.today,
-                    color: _dateSelectorActive
-                        ? Colors.amber
-                        : Colors.grey.shade600,
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
-                      child: Text(
-                        'date / time',
-                        style: TextStyle(
-                          fontFamily: 'Rajdhani',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 24.0,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 6.0),
-                      child: Text(
-                        DateFormat("yyyy-MM-dd HH:mm").format(_dateTime),
-                        style: TextStyle(
-                          fontFamily: 'Rajdhani',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 32.0,
-                          color: Colors.brown.shade700,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            onTap: () async {
-              setState(() {
+          DateTimeFormField(
+            dateTime: _dateTime,
+            isActive: _dateSelectorActive,
+            onCancelled: () => setState(() {
+              _dateSelectorActive = false;
+            }),
+            onChanged: (nextDateTime) => setState(() {
+              _dateTime = nextDateTime;
+              _dateSelectorActive = false;
+            }),
+            onTapped: () => setState(
+              () {
                 _dateSelectorActive = true;
-              });
-              var nextDate = await showDatePicker(
-                context: context,
-                initialDate: _dateTime,
-                firstDate: DateUtils.addMonthsToMonthDate(_dateTime, -12),
-                lastDate: DateUtils.addMonthsToMonthDate(_dateTime, 12),
-              );
-
-              if (nextDate == null) {
-                setState(() {
-                  _dateSelectorActive = false;
-                });
-                return;
-              }
-              var originalTime =
-                  TimeOfDay(hour: _dateTime.hour, minute: _dateTime.minute);
-              var nextTime = await showTimePicker(
-                  context: context, initialTime: originalTime);
-
-              var nextDateTime = DateTime(
-                nextDate.year,
-                nextDate.month,
-                nextDate.day,
-                nextTime?.hour ?? nextDate.hour,
-                nextTime?.minute ?? nextDate.minute,
-              );
-              setState(() {
-                _dateTime = nextDateTime;
-                _dateSelectorActive = false;
-              });
-            },
+              },
+            ),
           ),
           DropdownButtonFormField(
             style: TextStyle(
