@@ -35,13 +35,13 @@ class DateTimeFormField extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
+                padding: const EdgeInsets.only(top: 4.0),
                 child: Text(
                   'date / time',
                   style: TextStyle(
                     fontFamily: 'Rajdhani',
                     fontWeight: FontWeight.w500,
-                    fontSize: 24.0,
+                    fontSize: 22.0,
                     color: Colors.grey,
                   ),
                 ),
@@ -51,9 +51,9 @@ class DateTimeFormField extends StatelessWidget {
                 child: Text(
                   DateFormat("yyyy-MM-dd HH:mm").format(dateTime),
                   style: TextStyle(
-                    fontFamily: 'Rajdhani',
+                    fontFamily: 'KoHo',
                     fontWeight: FontWeight.w500,
-                    fontSize: 32.0,
+                    fontSize: 30.0,
                     color: Colors.brown.shade700,
                   ),
                 ),

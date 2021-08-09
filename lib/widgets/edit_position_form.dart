@@ -39,6 +39,7 @@ class EditPositionFormState extends State<EditPositionForm> {
 
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).primaryColor;
     return Form(
       key: _formKey,
       child: Column(
@@ -61,7 +62,7 @@ class EditPositionFormState extends State<EditPositionForm> {
           ),
           DropdownButtonFormField(
             style: TextStyle(
-              fontFamily: 'Rajdhani',
+              fontFamily: 'KoHo',
               fontWeight: FontWeight.w500,
               fontSize: 32.0,
               color: Colors.brown.shade700,
@@ -79,9 +80,9 @@ class EditPositionFormState extends State<EditPositionForm> {
                 child: Text(
                   value,
                   style: TextStyle(
-                    fontFamily: 'Rajdhani',
+                    fontFamily: 'KoHo',
                     fontWeight: FontWeight.w500,
-                    fontSize: 32.0,
+                    fontSize: 30.0,
                     color: Colors.brown.shade700,
                   ),
                 ),
@@ -95,7 +96,7 @@ class EditPositionFormState extends State<EditPositionForm> {
               labelStyle: TextStyle(
                 fontFamily: 'Rajdhani',
                 fontWeight: FontWeight.w500,
-                fontSize: 32.0,
+                fontSize: 28.0,
                 color: Colors.grey,
               ),
             ),
@@ -115,7 +116,7 @@ class EditPositionFormState extends State<EditPositionForm> {
               labelStyle: TextStyle(
                 fontFamily: 'Rajdhani',
                 fontWeight: FontWeight.w500,
-                fontSize: 32.0,
+                fontSize: 28.0,
                 color: Colors.grey,
               ),
             ),
@@ -143,7 +144,7 @@ class EditPositionFormState extends State<EditPositionForm> {
               labelStyle: TextStyle(
                 fontFamily: 'Rajdhani',
                 fontWeight: FontWeight.w500,
-                fontSize: 32.0,
+                fontSize: 28.0,
                 color: Colors.grey,
               ),
             ),
@@ -158,6 +159,14 @@ class EditPositionFormState extends State<EditPositionForm> {
             },
           ),
           ElevatedButton(
+            style: ButtonStyle(
+              foregroundColor: MaterialStateColor.resolveWith(
+                (states) => Colors.white,
+              ),
+              backgroundColor: MaterialStateColor.resolveWith(
+                (states) => primaryColor,
+              ),
+            ),
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 var added = Position(
@@ -171,7 +180,7 @@ class EditPositionFormState extends State<EditPositionForm> {
                 widget.onUpdatedHandler(added);
               }
             },
-            child: const Text('Submit'),
+            child: const Text('Save'),
           ),
         ],
       ),

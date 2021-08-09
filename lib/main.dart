@@ -47,6 +47,7 @@ class App extends StatelessWidget {
       title: 'Guldfasan',
       theme: ThemeData(
         primarySwatch: Colors.amber,
+        primaryColor: Colors.amber.shade700,
       ),
       home: ChangeNotifierProvider<AppState>(
         create: (BuildContext context) => AppState(_dbService, mainReceivePort),
