@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
+import 'package:guldfasan/models/position_operation.dart';
 import 'package:guldfasan/widgets/position_collection_display.dart';
 import 'package:guldfasan/widgets/sub_page_scaffold.dart';
 import 'package:intl/intl.dart';
@@ -20,24 +21,41 @@ class PositionDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SubPageScaffold(
-      onCompleted: () => Navigator.pop(context, position),
+      onCompleted: () => Navigator.pop(
+        context,
+        PositionOperation(
+          position: position,
+          type: OperationType.update,
+        ),
+      ),
       title: "Position Details",
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           DetailsHeader(position: position, currentPrice: currentPrice),
-          SectionLabel(
-            text: 'Purchase Date',
-          ),
+          SectionLabel(text: 'Purchase Date'),
           PurchaseDateLabel(dateTime: position.dateTime),
-          SectionLabel(
-            text: 'Value at Purchase',
-          ),
+          SectionLabel(text: 'Value at Purchase'),
           PurchaseValue(position: position),
-          PurchaseValueBreakDown(position: position)
+          PurchaseValueBreakDown(position: position),
         ],
       ),
+      actions: [
+        IconButton(
+          onPressed: () => Navigator.pop(
+            context,
+            PositionOperation(
+              position: position,
+              type: OperationType.delete,
+            ),
+          ),
+          icon: Icon(
+            Icons.delete,
+            color: Colors.grey.shade700,
+          ),
+        )
+      ],
     );
   }
 }

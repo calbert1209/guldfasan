@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:guldfasan/app_state.dart';
 import 'package:guldfasan/models/position.dart';
+import 'package:guldfasan/models/position_operation.dart';
 import 'package:guldfasan/pages/postion_details_page.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 const PositionCollectionInsets = EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0);
 final String Function(dynamic number) _formatCurrency =
@@ -101,6 +104,7 @@ class PositionDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var diffColor = colorForSign(diff);
+    var appState = Provider.of<AppState>(context);
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
@@ -112,7 +116,7 @@ class PositionDisplay extends StatelessWidget {
       elevation: 0.5,
       child: InkWell(
         onTap: () {
-          Navigator.push<Position>(
+          Navigator.push<PositionOperation>(
             context,
             MaterialPageRoute(
               builder: (context) => PositionDetailsPage(
@@ -120,7 +124,19 @@ class PositionDisplay extends StatelessWidget {
                 currentPrice: currentPrice,
               ),
             ),
-          ).then((data) => print(data?.toMap().toString()));
+          ).then((data) {
+            if (data == null) return;
+
+            if (data.type == OperationType.update) {
+              print("::: would update... :::");
+              print(data.position.toMap().toString());
+            } else {
+              var id = data.position.id;
+              if (id != null) {
+                appState.deletePosition(id);
+              }
+            }
+          });
         },
         child: Padding(
           padding: PositionCollectionInsets,

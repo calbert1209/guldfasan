@@ -51,5 +51,11 @@ class AppState with ChangeNotifier {
     return nextIndex;
   }
 
+  Future<int> deletePosition(int id) async {
+    var result = await dbService.delete(id);
+    notifyListeners();
+    return result;
+  }
+
   Stream<dynamic> get stream => _controller.stream;
 }

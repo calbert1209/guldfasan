@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 
 class SubPageScaffold extends StatelessWidget {
   SubPageScaffold(
-      {required this.onCompleted, required this.title, required this.child});
+      {required this.onCompleted,
+      required this.title,
+      required this.child,
+      this.actions});
 
   final VoidCallback onCompleted;
   final String title;
   final Widget child;
+  final List<Widget>? actions;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +24,7 @@ class SubPageScaffold extends StatelessWidget {
           ),
           onPressed: onCompleted,
         ),
+        actions: actions,
         title: Text(
           title,
           style: TextStyle(

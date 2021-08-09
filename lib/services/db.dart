@@ -73,6 +73,14 @@ CREATE TABLE $_tableName(
     return this._database.insert(_tableName, position.toMap());
   }
 
+  Future<int> delete(int id) async {
+    return _database.delete(
+      _tableName,
+      where: '${PositionKey.id} = ?',
+      whereArgs: [id],
+    );
+  }
+
   Future<List<Map<String, dynamic>>> queryAll() async {
     await _ensureOpened();
     return this._database.query(_tableName);
