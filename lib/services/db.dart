@@ -73,11 +73,13 @@ CREATE TABLE $_tableName(
     return this._database.insert(_tableName, position.toMap());
   }
 
+  String _idWhereString = '${PositionKey.id} = ?';
+
   Future<int> delete(int id) async {
     await _ensureOpened();
     return _database.delete(
       _tableName,
-      where: '${PositionKey.id} = ?',
+      where: _idWhereString,
       whereArgs: [id],
     );
   }
@@ -89,7 +91,7 @@ CREATE TABLE $_tableName(
     return _database.update(
       _tableName,
       position.toMap(),
-      where: '${PositionKey.id} = ?',
+      where: _idWhereString,
       whereArgs: [position.id],
     );
   }
