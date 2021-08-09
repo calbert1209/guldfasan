@@ -36,11 +36,20 @@ class PositionDetailsPage extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           DetailsHeader(position: position, currentPrice: currentPrice),
-          SectionLabel(text: 'Purchase Date'),
-          PurchaseDateLabel(dateTime: position.dateTime),
+          SectionLabel(text: 'Current Value'),
+          PurchaseValue(
+            position: position,
+            currentPrice: currentPrice,
+          ),
+          PurchaseValueBreakDown(
+            position: position,
+            currentPrice: currentPrice,
+          ),
           SectionLabel(text: 'Value at Purchase'),
           PurchaseValue(position: position),
           PurchaseValueBreakDown(position: position),
+          SectionLabel(text: 'Purchase Date'),
+          PurchaseDateLabel(dateTime: position.dateTime),
         ],
       ),
       actions: [
@@ -84,13 +93,16 @@ class PurchaseValue extends StatelessWidget {
   PurchaseValue({
     Key? key,
     required this.position,
+    this.currentPrice,
   }) : super(key: key);
 
   final Position position;
+  final double? currentPrice;
 
   @override
   Widget build(BuildContext context) {
-    final valueAtPurchase = position.units * position.price;
+    final price = currentPrice ?? position.price;
+    final valueAtPurchase = position.units * price;
     return Row(
       children: [
         Padding(
@@ -114,9 +126,11 @@ class PurchaseValueBreakDown extends StatelessWidget {
   PurchaseValueBreakDown({
     Key? key,
     required this.position,
+    this.currentPrice,
   }) : super(key: key);
 
   final Position position;
+  final double? currentPrice;
 
   final String Function(dynamic number) _formatCurrency =
       NumberFormat.simpleCurrency(
@@ -126,26 +140,29 @@ class PurchaseValueBreakDown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        ' ( ',
-        position.units.toString(),
-        ' ${position.symbol}',
-        ' @ ',
-        _formatCurrency(position.price),
-        ' ) ',
-      ].map<Widget>((it) {
-        return Text(
-          it,
-          style: TextStyle(
-            fontFamily: 'KoHo',
-            fontWeight: FontWeight.w300,
-            fontSize: 20.0,
-            color: Colors.brown.shade300,
-          ),
-        );
-      }).toList(),
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          ' ( ',
+          position.units.toString(),
+          ' ${position.symbol}',
+          ' @ ',
+          _formatCurrency(currentPrice ?? position.price),
+          ' ) ',
+        ].map<Widget>((it) {
+          return Text(
+            it,
+            style: TextStyle(
+              fontFamily: 'KoHo',
+              fontWeight: FontWeight.w300,
+              fontSize: 20.0,
+              color: Colors.brown.shade300,
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 }
