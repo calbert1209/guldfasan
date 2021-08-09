@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/widgets/sub_page_scaffold.dart';
 
 class AddPositionPage extends StatelessWidget {
@@ -35,32 +36,59 @@ class AddPositionFormState extends State<AddPositionForm> {
   // Note: This is a `GlobalKey<FormState>`,
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
-  String dropdownValue = 'BTC';
+  String _dropdownValue = 'BTC';
   DateTime dateTime = DateTime.now();
   final _dateController =
       TextEditingController(text: DateTime.now().toIso8601String());
+  bool _dateSelectorActive = false;
+  final _unitsController = TextEditingController();
+  final _unitPriceController = TextEditingController();
+
+  final String _valueGuidance = "Please enter numeric value";
 
   @override
   Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
     return Form(
       key: _formKey,
       child: Column(
         children: <Widget>[
           // Add TextFormFields and ElevatedButton here.
-
-          TextFormField(
-            decoration: InputDecoration(
-                icon: Icon(Icons.today), labelText: 'date / time'),
-            // The validator receives the text that the user has entered.
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-            controller: _dateController,
+          InkWell(
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: Icon(
+                    Icons.today,
+                    color: _dateSelectorActive
+                        ? Colors.amber
+                        : Colors.grey.shade600,
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
+                      child: Text(
+                        'date / time',
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6.0),
+                      child: Text(_dateController.text),
+                    ),
+                  ],
+                ),
+              ],
+            ),
             onTap: () {
+              setState(() {
+                _dateSelectorActive = true;
+              });
               showDatePicker(
                 context: context,
                 initialDate: dateTime,
@@ -70,14 +98,18 @@ class AddPositionFormState extends State<AddPositionForm> {
                 setState(() {
                   _dateController.text = nextDateTime!.toIso8601String();
                 });
+              }).whenComplete(() {
+                setState(() {
+                  _dateSelectorActive = false;
+                });
               });
             },
           ),
           DropdownButtonFormField(
-            value: dropdownValue,
+            value: _dropdownValue,
             onChanged: (String? newValue) {
               setState(() {
-                dropdownValue = newValue!;
+                _dropdownValue = newValue!;
               });
             },
             items: <String>['BTC', 'ETH']
@@ -100,9 +132,11 @@ class AddPositionFormState extends State<AddPositionForm> {
                 ),
                 labelText: 'units'),
             // The validator receives the text that the user has entered.
+            controller: _unitsController,
+            keyboardType: TextInputType.number,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter some text';
+                return _valueGuidance;
               }
               return null;
             },
@@ -114,10 +148,13 @@ class AddPositionFormState extends State<AddPositionForm> {
                 ),
                 labelText: 'unit price'),
             // The validator receives the text that the user has entered.
+            controller: _unitPriceController,
+            keyboardType: TextInputType.number,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter some text';
+                return _valueGuidance;
               }
+              print(value.runtimeType);
               return null;
             },
           ),
@@ -127,9 +164,19 @@ class AddPositionFormState extends State<AddPositionForm> {
               if (_formKey.currentState!.validate()) {
                 // If the form is valid, display a snackbar. In the real world,
                 // you'd often call a server or save the information in a database.
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Processing Data')),
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //   const SnackBar(content: Text('Processing Data')),
+                // );
+                // show progress
+                // await persistance
+                // then pop
+                var alice = Position(
+                  dateTime: DateTime.parse(_dateController.text),
+                  symbol: _dropdownValue,
+                  units: double.parse(_unitsController.text),
+                  price: double.parse(_unitPriceController.text),
                 );
+                Navigator.pop(context, alice);
               }
             },
             child: const Text('Submit'),

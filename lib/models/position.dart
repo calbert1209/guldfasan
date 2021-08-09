@@ -9,13 +9,13 @@ class PositionKey {
 
 class Position {
   Position(
-      {required this.id,
+      {this.id,
       required this.symbol,
       required this.units,
       required this.price,
       required this.dateTime});
 
-  final int id;
+  final int? id;
   final String symbol;
   final double units;
   final double price;
@@ -86,28 +86,28 @@ Iterable<Map<String, dynamic>> kDummyEntriesJson = [
       units: 0.00387996,
       price: 257734,
       dateTime: DateTime(2021, 6, 18, 22, 38)),
-  Position(
-      id: 5,
-      symbol: 'BTC',
-      units: 0.00023907,
-      price: 6182775,
-      dateTime: DateTime(2022, 12, 9, 22, 38)),
-  Position(
-      id: 6,
-      symbol: 'ETH',
-      units: 0.00387996,
-      price: 457734,
-      dateTime: DateTime(2022, 12, 9, 22, 38)),
-  Position(
-      id: 7,
-      symbol: 'BTC',
-      units: 0.00023907,
-      price: 4182775,
-      dateTime: DateTime(2023, 12, 9, 10, 8)),
-  Position(
-      id: 8,
-      symbol: 'ETH',
-      units: 0.001000,
-      price: 257734,
-      dateTime: DateTime(2023, 12, 9, 10, 10)),
+  // Position(
+  //     id: 5,
+  //     symbol: 'BTC',
+  //     units: 0.00023907,
+  //     price: 6182775,
+  //     dateTime: DateTime(2022, 12, 9, 22, 38)),
+  // Position(
+  //     id: 6,
+  //     symbol: 'ETH',
+  //     units: 0.00387996,
+  //     price: 457734,
+  //     dateTime: DateTime(2022, 12, 9, 22, 38)),
+  // Position(
+  //     id: 7,
+  //     symbol: 'BTC',
+  //     units: 0.00023907,
+  //     price: 4182775,
+  //     dateTime: DateTime(2023, 12, 9, 10, 8)),
+  // Position(
+  //     id: 8,
+  //     symbol: 'ETH',
+  //     units: 0.001000,
+  //     price: 257734,
+  //     dateTime: DateTime(2023, 12, 9, 10, 10)),
 ].map((it) => it.toMap());

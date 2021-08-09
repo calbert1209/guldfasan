@@ -16,7 +16,7 @@ class AppState with ChangeNotifier {
   final ReceivePort receivePort;
   final StreamController<dynamic> _controller = StreamController.broadcast();
 
-  Future<Iterable<PositionCollection>> portfolio() async {
+  Future<Iterable<PositionCollection>> get portfolio async {
     var positionMaps = await dbService.queryAll();
     print("got data from db. entry count: ${positionMaps.length}");
     var map = positionMaps
@@ -36,6 +36,19 @@ class AppState with ChangeNotifier {
       },
     );
     return map.values;
+  }
+
+  Future<int> addPosition(Position position) async {
+    var nextIndex = await dbService.insert(position);
+    // var nextPosition = Position(
+    //   id: nextIndex,
+    //   symbol: position.symbol,
+    //   units: position.units,
+    //   price: position.price,
+    //   dateTime: position.dateTime,
+    // );
+    notifyListeners();
+    return nextIndex;
   }
 
   Stream<dynamic> get stream => _controller.stream;

@@ -31,6 +31,7 @@ class SubPageScaffold extends StatelessWidget {
         ),
       ),
       body: child,
+      resizeToAvoidBottomInset: false,
     );
   }
 }

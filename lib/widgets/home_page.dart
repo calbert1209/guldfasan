@@ -31,7 +31,7 @@ class HomePage extends StatelessWidget {
         padding: EdgeInsets.only(bottom: 80.0),
         children: [
           FutureBuilder(
-            future: appState.portfolio(),
+            future: appState.portfolio,
             builder: (BuildContext context,
                 AsyncSnapshot<Iterable<PositionCollection>> snapshot) {
               if (snapshot.hasError) {
@@ -55,12 +55,16 @@ class HomePage extends StatelessWidget {
           color: Colors.white,
         ),
         onPressed: () {
-          Navigator.push(
+          Navigator.push<Position>(
             context,
             MaterialPageRoute(
               builder: (context) => AddPositionPage(),
             ),
-          );
+          ).then((result) {
+            if (result != null) {
+              appState.addPosition(result);
+            }
+          });
         },
       ),
     );
