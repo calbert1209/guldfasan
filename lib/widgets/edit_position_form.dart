@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
+import 'package:intl/intl.dart';
 
 typedef void OnUpdatedHandler(Position position);
 
@@ -24,16 +25,11 @@ class EditPositionFormState extends State<EditPositionForm> {
             TextEditingController(text: position?.units.toString() ?? ''),
         _priceController =
             TextEditingController(text: position?.price.toString() ?? ''),
-        _dateTime = position?.dateTime ?? DateTime.now(),
-        _dateController = TextEditingController(
-          text: position?.dateTime.toIso8601String() ??
-              DateTime.now().toIso8601String(),
-        );
+        _dateTime = position?.dateTime ?? DateTime.now();
 
   String _symbol;
   final _unitsController;
   final _priceController;
-  final _dateController;
   DateTime _dateTime;
 
   final _formKey = GlobalKey<FormState>();
@@ -47,7 +43,6 @@ class EditPositionFormState extends State<EditPositionForm> {
       key: _formKey,
       child: Column(
         children: <Widget>[
-          // Add TextFormFields and ElevatedButton here.
           InkWell(
             child: Row(
               children: [
@@ -68,39 +63,71 @@ class EditPositionFormState extends State<EditPositionForm> {
                       child: Text(
                         'date / time',
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          fontFamily: 'Rajdhani',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 24.0,
+                          color: Colors.grey,
                         ),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 6.0),
-                      child: Text(_dateController.text),
+                      child: Text(
+                        DateFormat("yyyy-MM-dd HH:mm").format(_dateTime),
+                        style: TextStyle(
+                          fontFamily: 'Rajdhani',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 32.0,
+                          color: Colors.brown.shade700,
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ],
             ),
-            onTap: () {
+            onTap: () async {
               setState(() {
                 _dateSelectorActive = true;
               });
-              showDatePicker(
+              var nextDate = await showDatePicker(
                 context: context,
                 initialDate: _dateTime,
                 firstDate: DateUtils.addMonthsToMonthDate(_dateTime, -12),
                 lastDate: DateUtils.addMonthsToMonthDate(_dateTime, 12),
-              ).then((nextDateTime) {
-                setState(() {
-                  _dateController.text = nextDateTime!.toIso8601String();
-                });
-              }).whenComplete(() {
+              );
+
+              if (nextDate == null) {
                 setState(() {
                   _dateSelectorActive = false;
                 });
+                return;
+              }
+              var originalTime =
+                  TimeOfDay(hour: _dateTime.hour, minute: _dateTime.minute);
+              var nextTime = await showTimePicker(
+                  context: context, initialTime: originalTime);
+
+              var nextDateTime = DateTime(
+                nextDate.year,
+                nextDate.month,
+                nextDate.day,
+                nextTime?.hour ?? nextDate.hour,
+                nextTime?.minute ?? nextDate.minute,
+              );
+              setState(() {
+                _dateTime = nextDateTime;
+                _dateSelectorActive = false;
               });
             },
           ),
           DropdownButtonFormField(
+            style: TextStyle(
+              fontFamily: 'Rajdhani',
+              fontWeight: FontWeight.w500,
+              fontSize: 32.0,
+              color: Colors.brown.shade700,
+            ),
             value: _symbol,
             onChanged: (String? newValue) {
               setState(() {
@@ -111,22 +138,49 @@ class EditPositionFormState extends State<EditPositionForm> {
                 .map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
-                child: Text(value),
+                child: Text(
+                  value,
+                  style: TextStyle(
+                    fontFamily: 'Rajdhani',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 32.0,
+                    color: Colors.brown.shade700,
+                  ),
+                ),
               );
             }).toList(),
             decoration: InputDecoration(
-                icon: Icon(
-                  Icons.paid,
-                ),
-                labelText: 'currency'),
+              icon: Icon(
+                Icons.paid,
+              ),
+              labelText: 'currency',
+              labelStyle: TextStyle(
+                fontFamily: 'Rajdhani',
+                fontWeight: FontWeight.w500,
+                fontSize: 32.0,
+                color: Colors.grey,
+              ),
+            ),
           ),
           TextFormField(
+            style: TextStyle(
+              fontFamily: 'KoHo',
+              fontWeight: FontWeight.w500,
+              fontSize: 32.0,
+              color: Colors.brown.shade700,
+            ),
             decoration: InputDecoration(
-                icon: Icon(
-                  Icons.toll,
-                ),
-                labelText: 'units'),
-            // The validator receives the text that the user has entered.
+              icon: Icon(
+                Icons.toll,
+              ),
+              labelText: 'units',
+              labelStyle: TextStyle(
+                fontFamily: 'Rajdhani',
+                fontWeight: FontWeight.w500,
+                fontSize: 32.0,
+                color: Colors.grey,
+              ),
+            ),
             controller: _unitsController,
             keyboardType: TextInputType.number,
             validator: (value) {
@@ -137,12 +191,24 @@ class EditPositionFormState extends State<EditPositionForm> {
             },
           ),
           TextFormField(
+            style: TextStyle(
+              fontFamily: 'KoHo',
+              fontWeight: FontWeight.w500,
+              fontSize: 32.0,
+              color: Colors.brown.shade700,
+            ),
             decoration: InputDecoration(
-                icon: Icon(
-                  Icons.sell,
-                ),
-                labelText: 'unit price'),
-            // The validator receives the text that the user has entered.
+              icon: Icon(
+                Icons.sell,
+              ),
+              labelText: 'unit price',
+              labelStyle: TextStyle(
+                fontFamily: 'Rajdhani',
+                fontWeight: FontWeight.w500,
+                fontSize: 32.0,
+                color: Colors.grey,
+              ),
+            ),
             controller: _priceController,
             keyboardType: TextInputType.number,
             validator: (value) {
@@ -155,31 +221,16 @@ class EditPositionFormState extends State<EditPositionForm> {
           ),
           ElevatedButton(
             onPressed: () {
-              // Validate returns true if the form is valid, or false otherwise.
               if (_formKey.currentState!.validate()) {
-                // If the form is valid, display a snackbar. In the real world,
-                // you'd often call a server or save the information in a database.
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //   const SnackBar(content: Text('Processing Data')),
-                // );
-                // show progress
-                // await persistance
-                // then pop
                 var added = Position(
                   id: widget.position?.id,
-                  dateTime: DateTime.parse(_dateController.text),
+                  dateTime: _dateTime,
                   symbol: _symbol,
                   units: double.parse(_unitsController.text),
                   price: double.parse(_priceController.text),
                 );
+
                 widget.onUpdatedHandler(added);
-                // Navigator.pop(
-                //   context,
-                //   PositionOperation(
-                //     position: added,
-                //     type: OperationType.create,
-                //   ),
-                // );
               }
             },
             child: const Text('Submit'),
