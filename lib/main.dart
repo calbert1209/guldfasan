@@ -32,10 +32,6 @@ KoHo
 20 / 300 / grey
  */
 
-Widget buildHomePage(BuildContext context, Widget? _) {
-  return HomePage(title: 'Guldfasan');
-}
-
 class App extends StatelessWidget {
   App(this._dbService);
 
@@ -51,7 +47,7 @@ class App extends StatelessWidget {
       ),
       home: ChangeNotifierProvider<AppState>(
         create: (BuildContext context) => AppState(_dbService, mainReceivePort),
-        builder: buildHomePage,
+        builder: (context, _) => HomePage(),
       ),
     );
   }

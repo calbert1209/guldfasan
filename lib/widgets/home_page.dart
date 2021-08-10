@@ -7,9 +7,7 @@ import 'package:guldfasan/widgets/portfolio_stream_builder.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +17,7 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.white,
         foregroundColor: Colors.amber.shade700,
         title: Text(
-          title,
+          'Overview',
           style: TextStyle(
             fontFamily: 'Rajdhani',
             fontWeight: FontWeight.w700,
