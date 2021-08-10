@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
+import 'package:guldfasan/services/fetcher.dart';
 import 'package:guldfasan/widgets/portfolio.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -35,9 +36,9 @@ class PortfolioStreamBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
-    return StreamBuilder<dynamic>(
+    return StreamBuilder<FetchedMessage>(
       stream: appState.stream,
-      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<FetchedMessage> snapshot) {
         Map<String, int> priceData = {"BTC": -1, "ETH": -1};
         var timestamp = "not updated!";
         if (snapshot.hasError) {

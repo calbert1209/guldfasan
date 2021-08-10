@@ -4,6 +4,7 @@ import 'dart:isolate';
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/services/db.dart';
+import 'package:guldfasan/services/fetcher.dart';
 
 // NOTE Piping ReceivePort through StreamController prevents nasty error on re-render
 // SEE: https://stackoverflow.com/a/64978367
@@ -14,7 +15,8 @@ class AppState with ChangeNotifier {
 
   final DatabaseService dbService;
   final ReceivePort receivePort;
-  final StreamController<dynamic> _controller = StreamController.broadcast();
+  final StreamController<FetchedMessage> _controller =
+      StreamController.broadcast();
 
   Future<Iterable<PositionCollection>> get portfolio async {
     var positionMaps = await dbService.queryAll();
@@ -56,5 +58,5 @@ class AppState with ChangeNotifier {
     return result;
   }
 
-  Stream<dynamic> get stream => _controller.stream;
+  Stream<FetchedMessage> get stream => _controller.stream;
 }
