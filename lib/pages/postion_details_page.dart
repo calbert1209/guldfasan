@@ -106,7 +106,7 @@ class PurchaseValue extends StatelessWidget {
     return Row(
       children: [
         Padding(
-          padding: EdgeInsets.all(8.0),
+          padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
           child: Text(
             _formatDecimalCurrency(valueAtPurchase),
             style: TextStyle(
@@ -145,12 +145,12 @@ class PurchaseValueBreakDown extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          ' ( ',
+          // ' ( ',
           position.units.toString(),
           ' ${position.symbol}',
           ' @ ',
           _formatCurrency(currentPrice ?? position.price),
-          ' ) ',
+          // ' ) ',
         ].map<Widget>((it) {
           return Text(
             it,
@@ -180,7 +180,7 @@ class SectionLabel extends StatelessWidget {
     return Row(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 8.0),
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 24.0),
           child: Text(
             text,
             style: TextStyle(
@@ -211,7 +211,7 @@ class PurchaseDateLabel extends StatelessWidget {
     return Row(
       children: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
           child: Text(
             dateString,
             style: TextStyle(
