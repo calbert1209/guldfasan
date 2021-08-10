@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'package:flutter/material.dart';
 import 'package:guldfasan/services/db.dart';
 import 'package:guldfasan/services/fetcher.dart';
+import 'package:guldfasan/themes/amber.dart';
 import 'package:provider/provider.dart';
 import 'package:guldfasan/app_state.dart';
 import 'package:guldfasan/widgets/home_page.dart';
@@ -42,8 +43,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'Guldfasan',
       theme: ThemeData(
-        primarySwatch: Colors.amber,
-        primaryColor: Colors.amber.shade700,
+        primarySwatch: customAmber(),
       ),
       home: ChangeNotifierProvider<AppState>(
         create: (BuildContext context) => AppState(_dbService, mainReceivePort),

@@ -12,6 +12,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -53,6 +54,7 @@ class HomePage extends StatelessWidget {
           Icons.add,
           color: Colors.white,
         ),
+        backgroundColor: theme.primaryColor,
         onPressed: () {
           Navigator.push<PositionOperation>(
             context,
