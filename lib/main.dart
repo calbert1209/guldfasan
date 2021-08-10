@@ -42,6 +42,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Guldfasan',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: customAmber(),
       ),
