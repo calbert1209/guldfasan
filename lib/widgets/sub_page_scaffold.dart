@@ -17,13 +17,14 @@ class SubPageScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.brown.shade50,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
-            color: Colors.amber.shade700,
+            color: theme.primaryColor,
           ),
           onPressed: onCompleted,
         ),
@@ -34,7 +35,7 @@ class SubPageScaffold extends StatelessWidget {
             fontFamily: 'Rajdhani',
             fontWeight: FontWeight.w700,
             fontSize: titleFontSize,
-            color: Colors.amber.shade700,
+            color: theme.primaryColor,
           ),
         ),
       ),

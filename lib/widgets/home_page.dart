@@ -15,15 +15,15 @@ class HomePage extends StatelessWidget {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.amber.shade700,
+        backgroundColor: Colors.brown.shade50,
+        foregroundColor: theme.primaryColor,
         title: Text(
           'Overview',
           style: TextStyle(
             fontFamily: 'Rajdhani',
             fontWeight: FontWeight.w700,
             fontSize: 32,
-            color: Colors.amber.shade700,
+            color: theme.primaryColor,
           ),
         ),
       ),
