@@ -26,6 +26,15 @@ class HomePage extends StatelessWidget {
             color: theme.primaryColor,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () => appState.triggerImmediateFetch(),
+            icon: Icon(
+              Icons.repeat,
+              color: theme.primaryColor,
+            ),
+          ),
+        ],
       ),
       body: ListView(
         padding: EdgeInsets.only(bottom: 80.0),

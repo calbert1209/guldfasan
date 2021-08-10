@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:isolate';
 
 import 'package:http/http.dart' as http;
@@ -29,16 +30,11 @@ Future<http.Response> _fetchCoinData() {
 
 void fetcher(SendPort toParent) async {
   final fromParent = ReceivePort();
-  var duration = Duration(seconds: 5);
-  fromParent.listen((message) {
-    if (message is Duration) {
-      print('fetcher got msg: $message');
-      duration = message;
-    }
-  });
   toParent.send(FetchedMessage(sendPort: fromParent.sendPort));
 
-  while (true) {
+  var duration = Duration(milliseconds: 500);
+
+  var executeFetch = () async {
     try {
       var response = await _fetchCoinData();
       if (response.statusCode == 200) {
@@ -72,6 +68,21 @@ void fetcher(SendPort toParent) async {
         ),
       );
     }
-    await Future.delayed(duration);
+  };
+
+  fromParent.listen((message) {
+    if (message is Duration) {
+      print('fetcher got msg: $message');
+      duration = message;
+    } else if (message == "immediate") {
+      print("immediate fetch requested");
+      executeFetch();
+    }
+  });
+
+  await executeFetch();
+
+  while (true) {
+    await Future.delayed(duration, executeFetch);
   }
 }

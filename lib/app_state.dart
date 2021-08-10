@@ -10,11 +10,17 @@ import 'package:guldfasan/services/fetcher.dart';
 // SEE: https://stackoverflow.com/a/64978367
 class AppState with ChangeNotifier {
   AppState(this.dbService, this.receivePort) {
-    this.receivePort.listen((message) => _controller.add(message));
+    this.receivePort.listen((message) {
+      if (message is FetchedMessage && message.hasSendPort()) {
+        fromWorker = message.sendPort!;
+      }
+      _controller.add(message);
+    });
   }
 
   final DatabaseService dbService;
   final ReceivePort receivePort;
+  SendPort? fromWorker;
   final StreamController<FetchedMessage> _controller =
       StreamController.broadcast();
 
@@ -59,4 +65,10 @@ class AppState with ChangeNotifier {
   }
 
   Stream<FetchedMessage> get stream => _controller.stream;
+
+  void triggerImmediateFetch() {
+    if (fromWorker is SendPort) {
+      fromWorker?.send("immediate");
+    }
+  }
 }
