@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/services/fetcher.dart';
 import 'package:guldfasan/widgets/portfolio.dart';
+import 'package:guldfasan/widgets/text_styles.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../app_state.dart';
@@ -55,17 +56,17 @@ class PortfolioStreamBuilder extends StatelessWidget {
         }
         return Column(
           children: [
+            Portfolio(_portfolio, priceData),
             Padding(
-              padding: const EdgeInsets.only(top: 16.0),
+              padding: const EdgeInsets.only(top: 24.0),
               child: Text(
                 'last updated: $timestamp',
-                style: TextStyle(
-                  fontFamily: 'Rajdhani',
-                  color: Colors.grey,
+                style: RajdhaniMedium(
+                  color: Colors.brown.shade200,
+                  fontSize: 12.0,
                 ),
               ),
             ),
-            Portfolio(_portfolio, priceData),
           ],
         );
       },

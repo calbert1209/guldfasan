@@ -4,6 +4,7 @@ import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/models/position_operation.dart';
 import 'package:guldfasan/pages/add_position_page.dart';
 import 'package:guldfasan/widgets/portfolio_stream_builder.dart';
+import 'package:guldfasan/widgets/text_styles.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
@@ -19,9 +20,7 @@ class HomePage extends StatelessWidget {
         foregroundColor: theme.primaryColor,
         title: Text(
           'Overview',
-          style: TextStyle(
-            fontFamily: 'Rajdhani',
-            fontWeight: FontWeight.w700,
+          style: RajdhaniBold(
             fontSize: 32,
             color: theme.primaryColor,
           ),

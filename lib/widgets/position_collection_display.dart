@@ -3,6 +3,7 @@ import 'package:guldfasan/app_state.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/models/position_operation.dart';
 import 'package:guldfasan/pages/postion_details_page.dart';
+import 'package:guldfasan/widgets/text_styles.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -67,9 +68,7 @@ class Header extends StatelessWidget {
         children: [
           Text(
             symbol,
-            style: TextStyle(
-              fontFamily: 'Rajdhani',
-              fontWeight: FontWeight.w700,
+            style: RajdhaniBold(
               fontSize: 32,
               color: _color,
             ),
@@ -77,7 +76,7 @@ class Header extends StatelessWidget {
           Text(
             _formatCurrency(currentPrice),
             style: TextStyle(
-              fontFamily: 'KoBo',
+              fontFamily: 'KoHo',
               fontWeight: FontWeight.w300,
               fontSize: 28,
               color: _color,

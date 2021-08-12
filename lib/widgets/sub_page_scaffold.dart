@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guldfasan/widgets/text_styles.dart';
 
 class SubPageScaffold extends StatelessWidget {
   SubPageScaffold({
@@ -23,21 +24,23 @@ class SubPageScaffold extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.brown.shade50,
-        leading: onCompleted != null
-            ? IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: theme.primaryColor,
-                ),
-                onPressed: onCompleted,
-              )
-            : null,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.brown.shade400,
+          ),
+          onPressed: () {
+            if (onCompleted != null) {
+              onCompleted!();
+            } else {
+              Navigator.pop(context);
+            }
+          },
+        ),
         actions: actions,
         title: Text(
           title,
-          style: TextStyle(
-            fontFamily: 'Rajdhani',
-            fontWeight: FontWeight.w700,
+          style: RajdhaniBold(
             fontSize: titleFontSize,
             color: theme.primaryColor,
           ),

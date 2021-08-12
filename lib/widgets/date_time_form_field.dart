@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guldfasan/widgets/text_styles.dart';
 import 'package:intl/intl.dart';
 
 typedef void OnChangedHandler(DateTime datetime);
@@ -6,18 +7,43 @@ typedef void OnChangedHandler(DateTime datetime);
 class DateTimeFormField extends StatelessWidget {
   DateTimeFormField({
     Key? key,
-    required this.isActive,
     required this.dateTime,
-    required this.onChanged,
-    required this.onCancelled,
-    required this.onTapped,
+    required this.onChange,
   }) : super(key: key);
 
-  final bool isActive;
   final DateTime dateTime;
-  final OnChangedHandler onChanged;
-  final VoidCallback onCancelled;
-  final VoidCallback onTapped;
+  final OnChangedHandler onChange;
+
+  Future<void> _onTap(BuildContext context) async {
+    var nextDate = await showDatePicker(
+      context: context,
+      initialDate: dateTime,
+      firstDate: DateUtils.addMonthsToMonthDate(dateTime, -12),
+      lastDate: DateUtils.addMonthsToMonthDate(dateTime, 12),
+    );
+
+    if (nextDate == null) {
+      return;
+    }
+
+    var originalTime = TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
+    var nextTime =
+        await showTimePicker(context: context, initialTime: originalTime);
+
+    if (nextTime == null) {
+      return;
+    }
+
+    var nextDateTime = DateTime(
+      nextDate.year,
+      nextDate.month,
+      nextDate.day,
+      nextTime.hour,
+      nextTime.minute,
+    );
+
+    onChange(nextDateTime);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +54,7 @@ class DateTimeFormField extends StatelessWidget {
             padding: const EdgeInsets.only(right: 16.0),
             child: Icon(
               Icons.today,
-              color: isActive ? Colors.amber : Colors.grey.shade600,
+              color: Colors.brown.shade400,
             ),
           ),
           Column(
@@ -38,11 +64,9 @@ class DateTimeFormField extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 4.0),
                 child: Text(
                   'date / time',
-                  style: TextStyle(
-                    fontFamily: 'Rajdhani',
-                    fontWeight: FontWeight.w500,
+                  style: RajdhaniMedium(
                     fontSize: 22.0,
-                    color: Colors.grey,
+                    color: Colors.brown.shade400,
                   ),
                 ),
               ),
@@ -50,9 +74,7 @@ class DateTimeFormField extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 6.0),
                 child: Text(
                   DateFormat("yyyy-MM-dd HH:mm").format(dateTime),
-                  style: TextStyle(
-                    fontFamily: 'KoHo',
-                    fontWeight: FontWeight.w500,
+                  style: KoHoMedium(
                     fontSize: 30.0,
                     color: Colors.brown.shade700,
                   ),
@@ -63,34 +85,7 @@ class DateTimeFormField extends StatelessWidget {
         ],
       ),
       onTap: () async {
-        onTapped();
-
-        var nextDate = await showDatePicker(
-          context: context,
-          initialDate: dateTime,
-          firstDate: DateUtils.addMonthsToMonthDate(dateTime, -12),
-          lastDate: DateUtils.addMonthsToMonthDate(dateTime, 12),
-        );
-
-        if (nextDate == null) {
-          onCancelled();
-          return;
-        }
-
-        var originalTime =
-            TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
-        var nextTime =
-            await showTimePicker(context: context, initialTime: originalTime);
-
-        var nextDateTime = DateTime(
-          nextDate.year,
-          nextDate.month,
-          nextDate.day,
-          nextTime?.hour ?? nextDate.hour,
-          nextTime?.minute ?? nextDate.minute,
-        );
-
-        onChanged(nextDateTime);
+        _onTap(context);
       },
     );
   }

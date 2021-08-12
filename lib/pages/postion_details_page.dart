@@ -5,6 +5,7 @@ import 'package:guldfasan/pages/edit_position_page.dart';
 import 'package:guldfasan/widgets/bottom_nav_bar.dart';
 import 'package:guldfasan/widgets/position_collection_display.dart';
 import 'package:guldfasan/widgets/sub_page_scaffold.dart';
+import 'package:guldfasan/widgets/text_styles.dart';
 import 'package:intl/intl.dart';
 
 final String Function(dynamic number) _formatDecimalCurrency =
@@ -64,11 +65,12 @@ class PositionDetailsPage extends StatelessWidget {
           ),
           icon: Icon(
             Icons.delete,
-            color: Colors.grey.shade700,
+            color: Colors.brown.shade400,
           ),
         )
       ],
       bottomNavigationBar: BottomNavBar(
+        unselectedItemColor: Colors.brown.shade400,
         currentIndex: 1,
         onBack: () => Navigator.pop(
           context,
@@ -119,9 +121,7 @@ class PurchaseValue extends StatelessWidget {
           padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
           child: Text(
             _formatDecimalCurrency(valueAtPurchase),
-            style: TextStyle(
-              fontFamily: 'KoHo',
-              fontWeight: FontWeight.w500,
+            style: KoHoMedium(
               fontSize: 40.0,
               color: Colors.brown.shade700,
             ),
@@ -164,9 +164,7 @@ class PurchaseValueBreakDown extends StatelessWidget {
         ].map<Widget>((it) {
           return Text(
             it,
-            style: TextStyle(
-              fontFamily: 'KoHo',
-              fontWeight: FontWeight.w300,
+            style: KoHoMedium(
               fontSize: 20.0,
               color: Colors.brown.shade300,
             ),
@@ -193,9 +191,7 @@ class SectionLabel extends StatelessWidget {
           padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 24.0),
           child: Text(
             text,
-            style: TextStyle(
-              fontFamily: 'Rajdhani',
-              fontWeight: FontWeight.w700,
+            style: RajdhaniBold(
               fontSize: 24.0,
               color: Colors.brown.shade700,
             ),

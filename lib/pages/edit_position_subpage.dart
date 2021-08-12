@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/widgets/bottom_nav_bar.dart';
+import 'package:guldfasan/widgets/currency_dropdown.dart';
 import 'package:guldfasan/widgets/date_time_form_field.dart';
+import 'package:guldfasan/widgets/numeric_form_field.dart';
 import 'package:guldfasan/widgets/sub_page_scaffold.dart';
 
 typedef void OnUpdatedHandler(Position position);
@@ -37,9 +39,6 @@ class EditPositionFormState extends State<EditPositionSubPage> {
   DateTime _dateTime;
 
   final _formKey = GlobalKey<FormState>();
-  bool _dateSelectorActive = false;
-
-  final String _valueGuidance = "Please enter numeric value";
 
   @override
   Widget build(BuildContext context) {
@@ -53,117 +52,29 @@ class EditPositionFormState extends State<EditPositionSubPage> {
                 children: <Widget>[
                   DateTimeFormField(
                     dateTime: _dateTime,
-                    isActive: _dateSelectorActive,
-                    onCancelled: () => setState(() {
-                      _dateSelectorActive = false;
-                    }),
-                    onChanged: (nextDateTime) => setState(() {
+                    onChange: (nextDateTime) => setState(() {
                       _dateTime = nextDateTime;
-                      _dateSelectorActive = false;
                     }),
-                    onTapped: () => setState(
-                      () {
-                        _dateSelectorActive = true;
-                      },
-                    ),
                   ),
-                  DropdownButtonFormField(
-                    style: TextStyle(
-                      fontFamily: 'KoHo',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 32.0,
-                      color: Colors.brown.shade700,
-                    ),
+                  CurrencyDropdown(
                     value: _symbol,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _symbol = newValue!;
-                      });
+                    onChanged: (nextValue) {
+                      if (nextValue != null) {
+                        setState(() {
+                          _symbol = nextValue;
+                        });
+                      }
                     },
-                    items: <String>['BTC', 'ETH']
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(
-                          value,
-                          style: TextStyle(
-                            fontFamily: 'KoHo',
-                            fontWeight: FontWeight.w500,
-                            fontSize: 30.0,
-                            color: Colors.brown.shade700,
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                    decoration: InputDecoration(
-                      icon: Icon(
-                        Icons.paid,
-                      ),
-                      labelText: 'currency',
-                      labelStyle: TextStyle(
-                        fontFamily: 'Rajdhani',
-                        fontWeight: FontWeight.w500,
-                        fontSize: 28.0,
-                        color: Colors.grey,
-                      ),
-                    ),
                   ),
-                  TextFormField(
-                    style: TextStyle(
-                      fontFamily: 'KoHo',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 32.0,
-                      color: Colors.brown.shade700,
-                    ),
-                    decoration: InputDecoration(
-                      icon: Icon(
-                        Icons.toll,
-                      ),
-                      labelText: 'units',
-                      labelStyle: TextStyle(
-                        fontFamily: 'Rajdhani',
-                        fontWeight: FontWeight.w500,
-                        fontSize: 28.0,
-                        color: Colors.grey,
-                      ),
-                    ),
+                  NumericFormField(
                     controller: _unitsController,
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return _valueGuidance;
-                      }
-                      return null;
-                    },
+                    labelText: "units",
+                    icon: Icons.toll,
                   ),
-                  TextFormField(
-                    style: TextStyle(
-                      fontFamily: 'KoHo',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 32.0,
-                      color: Colors.brown.shade700,
-                    ),
-                    decoration: InputDecoration(
-                      icon: Icon(
-                        Icons.sell,
-                      ),
-                      labelText: 'unit price',
-                      labelStyle: TextStyle(
-                        fontFamily: 'Rajdhani',
-                        fontWeight: FontWeight.w500,
-                        fontSize: 28.0,
-                        color: Colors.grey,
-                      ),
-                    ),
+                  NumericFormField(
                     controller: _priceController,
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return _valueGuidance;
-                      }
-                      print(value.runtimeType);
-                      return null;
-                    },
+                    labelText: 'unit price',
+                    icon: Icons.sell,
                   ),
                 ],
               ),
@@ -172,6 +83,7 @@ class EditPositionFormState extends State<EditPositionSubPage> {
         ),
         bottomNavigationBar: BottomNavBar(
           currentIndex: 1,
+          unselectedItemColor: Colors.brown.shade400,
           onBack: () => Navigator.pop(context),
           items: [
             NavBarItem(
