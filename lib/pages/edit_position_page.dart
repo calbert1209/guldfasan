@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/models/position_operation.dart';
-import 'package:guldfasan/widgets/edit_position_form.dart';
-import 'package:guldfasan/widgets/sub_page_scaffold.dart';
+import 'package:guldfasan/pages/edit_position_subpage.dart';
 
 class EditPositionPage extends StatelessWidget {
   EditPositionPage({Key? key, required this.position}) : super(key: key);
@@ -10,25 +9,18 @@ class EditPositionPage extends StatelessWidget {
   final Position position;
   @override
   Widget build(BuildContext context) {
-    return SubPageScaffold(
-      onCompleted: () => Navigator.pop(context),
-      title: "Add Position",
-      child: Column(
-        children: [
-          EditPositionForm(
+    return EditPositionSubPage(
+      title: "Edit Position",
+      position: position,
+      onUpdatedHandler: (position) {
+        Navigator.pop(
+          context,
+          PositionOperation(
             position: position,
-            onUpdatedHandler: (position) {
-              Navigator.pop(
-                context,
-                PositionOperation(
-                  position: position,
-                  type: OperationType.update,
-                ),
-              );
-            },
+            type: OperationType.update,
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

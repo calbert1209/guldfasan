@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 
 class SubPageScaffold extends StatelessWidget {
   SubPageScaffold({
-    required this.onCompleted,
     required this.title,
     required this.child,
+    this.onCompleted,
     this.actions,
+    this.bottomNavigationBar,
     this.titleFontSize = 32,
   });
 
-  final VoidCallback onCompleted;
+  final VoidCallback? onCompleted;
   final String title;
   final Widget child;
   final List<Widget>? actions;
+  final Widget? bottomNavigationBar;
   final double titleFontSize;
 
   @override
@@ -21,13 +23,15 @@ class SubPageScaffold extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.brown.shade50,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: theme.primaryColor,
-          ),
-          onPressed: onCompleted,
-        ),
+        leading: onCompleted != null
+            ? IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: theme.primaryColor,
+                ),
+                onPressed: onCompleted,
+              )
+            : null,
         actions: actions,
         title: Text(
           title,
@@ -40,6 +44,7 @@ class SubPageScaffold extends StatelessWidget {
         ),
       ),
       body: child,
+      bottomNavigationBar: bottomNavigationBar,
       resizeToAvoidBottomInset: false,
     );
   }

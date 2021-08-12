@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/models/position_operation.dart';
 import 'package:guldfasan/pages/edit_position_page.dart';
+import 'package:guldfasan/widgets/bottom_nav_bar.dart';
 import 'package:guldfasan/widgets/position_collection_display.dart';
 import 'package:guldfasan/widgets/sub_page_scaffold.dart';
 import 'package:intl/intl.dart';
@@ -22,13 +23,13 @@ class PositionDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SubPageScaffold(
-      onCompleted: () => Navigator.pop(
-        context,
-        PositionOperation(
-          position: position,
-          type: OperationType.update,
-        ),
-      ),
+      // onCompleted: () => Navigator.pop(
+      //   context,
+      //   PositionOperation(
+      //     position: position,
+      //     type: OperationType.none,
+      //   ),
+      // ),
       title: "Position Details",
       titleFontSize: 24,
       child: Column(
@@ -54,24 +55,6 @@ class PositionDetailsPage extends StatelessWidget {
       ),
       actions: [
         IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute<PositionOperation>(
-                builder: (context) => EditPositionPage(position: position),
-              ),
-            ).then((result) {
-              if (result != null && result.type == OperationType.update) {
-                Navigator.pop(context, result);
-              }
-            });
-          },
-          icon: Icon(
-            Icons.edit,
-            color: Colors.grey.shade700,
-          ),
-        ),
-        IconButton(
           onPressed: () => Navigator.pop(
             context,
             PositionOperation(
@@ -85,6 +68,33 @@ class PositionDetailsPage extends StatelessWidget {
           ),
         )
       ],
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: 1,
+        onBack: () => Navigator.pop(
+          context,
+          PositionOperation(
+            position: position,
+            type: OperationType.update,
+          ),
+        ),
+        items: [
+          NavBarItem(
+            icon: Icons.edit,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<PositionOperation>(
+                  builder: (context) => EditPositionPage(position: position),
+                ),
+              ).then((result) {
+                if (result != null && result.type == OperationType.update) {
+                  Navigator.pop(context, result);
+                }
+              });
+            },
+          ),
+        ],
+      ),
     );
   }
 }

@@ -129,7 +129,7 @@ class PositionDisplay extends StatelessWidget {
 
             if (data.type == OperationType.update) {
               appState.updatePosition(data.position);
-            } else {
+            } else if (data.type == OperationType.delete) {
               var id = data.position.id;
               if (id != null) {
                 appState.deletePosition(id);
