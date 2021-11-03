@@ -43,66 +43,67 @@ class EditPositionFormState extends State<EditPositionSubPage> {
   @override
   Widget build(BuildContext context) {
     return SubPageScaffold(
-        title: widget.title,
-        child: Column(
-          children: [
-            Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  DateTimeFormField(
-                    dateTime: _dateTime,
-                    onChange: (nextDateTime) => setState(() {
-                      _dateTime = nextDateTime;
-                    }),
-                  ),
-                  CurrencyDropdown(
-                    value: _symbol,
-                    onChanged: (nextValue) {
-                      if (nextValue != null) {
-                        setState(() {
-                          _symbol = nextValue;
-                        });
-                      }
-                    },
-                  ),
-                  NumericFormField(
-                    controller: _unitsController,
-                    labelText: "units",
-                    icon: Icons.toll,
-                  ),
-                  NumericFormField(
-                    controller: _priceController,
-                    labelText: 'unit price',
-                    icon: Icons.sell,
-                  ),
-                ],
-              ),
+      title: widget.title,
+      child: Column(
+        children: [
+          Form(
+            key: _formKey,
+            child: Column(
+              children: <Widget>[
+                DateTimeFormField(
+                  dateTime: _dateTime,
+                  onChange: (nextDateTime) => setState(() {
+                    _dateTime = nextDateTime;
+                  }),
+                ),
+                CurrencyDropdown(
+                  value: _symbol,
+                  onChanged: (nextValue) {
+                    if (nextValue != null) {
+                      setState(() {
+                        _symbol = nextValue;
+                      });
+                    }
+                  },
+                ),
+                NumericFormField(
+                  controller: _unitsController,
+                  labelText: "units",
+                  icon: Icons.toll,
+                ),
+                NumericFormField(
+                  controller: _priceController,
+                  labelText: 'unit price',
+                  icon: Icons.sell,
+                ),
+              ],
             ),
-          ],
-        ),
-        bottomNavigationBar: BottomNavBar(
-          currentIndex: 1,
-          unselectedItemColor: Colors.brown.shade400,
-          onBack: () => Navigator.pop(context),
-          items: [
-            NavBarItem(
-              icon: Icons.check,
-              onTap: () {
-                if (_formKey.currentState!.validate()) {
-                  var added = Position(
-                    id: widget.position?.id,
-                    dateTime: _dateTime,
-                    symbol: _symbol,
-                    units: double.parse(_unitsController.text),
-                    price: double.parse(_priceController.text),
-                  );
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: 1,
+        unselectedItemColor: Colors.brown.shade400,
+        onBack: () => Navigator.pop(context),
+        items: [
+          NavBarItem(
+            icon: Icons.check,
+            onTap: () {
+              if (_formKey.currentState!.validate()) {
+                var added = Position(
+                  id: widget.position?.id,
+                  dateTime: _dateTime,
+                  symbol: _symbol,
+                  units: double.parse(_unitsController.text),
+                  price: double.parse(_priceController.text),
+                );
 
-                  widget.onUpdatedHandler(added);
-                }
-              },
-            ),
-          ],
-        ));
+                widget.onUpdatedHandler(added);
+              }
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
