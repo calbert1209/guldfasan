@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/app_state.dart';
 import 'package:guldfasan/models/position.dart';
-import 'package:guldfasan/models/position_operation.dart';
-import 'package:guldfasan/pages/add_position_page.dart';
 import 'package:guldfasan/widgets/portfolio_stream_builder.dart';
 import 'package:guldfasan/widgets/text_styles.dart';
 import 'package:provider/provider.dart';
+
+import 'home_page_end_drawer.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
@@ -26,26 +26,21 @@ class HomePage extends StatelessWidget {
           ),
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push<PositionOperation>(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddPositionPage(),
-                ),
-              ).then((result) {
-                if (result != null) {
-                  appState.addPosition(result.position);
-                }
-              });
-            },
-            icon: Icon(
-              Icons.add,
-              color: theme.primaryColor,
+          Builder(
+            builder: (context) => IconButton(
+              onPressed: () {
+                Scaffold.of(context).openEndDrawer();
+              },
+              icon: Icon(
+                Icons.menu,
+                color: theme.primaryColor,
+              ),
             ),
           ),
         ],
       ),
+      endDrawerEnableOpenDragGesture: false,
+      endDrawer: HomePageEndDrawer(),
       body: ListView(
         padding: EdgeInsets.only(bottom: 80.0),
         children: [
