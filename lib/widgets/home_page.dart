@@ -27,9 +27,20 @@ class HomePage extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            onPressed: () => appState.triggerImmediateFetch(),
+            onPressed: () {
+              Navigator.push<PositionOperation>(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddPositionPage(),
+                ),
+              ).then((result) {
+                if (result != null) {
+                  appState.addPosition(result.position);
+                }
+              });
+            },
             icon: Icon(
-              Icons.repeat,
+              Icons.add,
               color: theme.primaryColor,
             ),
           ),
@@ -59,21 +70,12 @@ class HomePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(
-          Icons.add,
+          Icons.repeat,
           color: Colors.white,
         ),
         backgroundColor: theme.primaryColor,
         onPressed: () {
-          Navigator.push<PositionOperation>(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddPositionPage(),
-            ),
-          ).then((result) {
-            if (result != null) {
-              appState.addPosition(result.position);
-            }
-          });
+          appState.triggerImmediateFetch();
         },
       ),
     );
