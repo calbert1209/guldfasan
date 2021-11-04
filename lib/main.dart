@@ -6,7 +6,7 @@ import 'package:guldfasan/services/fetcher.dart';
 import 'package:guldfasan/themes/amber.dart';
 import 'package:provider/provider.dart';
 import 'package:guldfasan/app_state.dart';
-import 'package:guldfasan/widgets/home_page.dart';
+import 'package:guldfasan/pages/home_page.dart';
 
 final ReceivePort mainReceivePort = new ReceivePort();
 

@@ -5,7 +5,7 @@ import 'package:guldfasan/widgets/portfolio_stream_builder.dart';
 import 'package:guldfasan/widgets/text_styles.dart';
 import 'package:provider/provider.dart';
 
-import 'home_page_end_drawer.dart';
+import '../widgets/home_page_end_drawer.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
