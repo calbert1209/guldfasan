@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position_operation.dart';
 import 'package:guldfasan/pages/add_position_page.dart';
+import 'package:guldfasan/pages/position_data_view_page.dart';
 import 'package:guldfasan/widgets/text_styles.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +40,10 @@ class HomePageEndDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.add),
+            leading: Icon(
+              Icons.add,
+              color: Colors.brown.shade400,
+            ),
             title: Text(
               'add position',
               style: RajdhaniMedium(
@@ -62,15 +66,28 @@ class HomePageEndDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            enabled: false,
-            leading: Icon(Icons.list),
+            leading: Icon(
+              Icons.list,
+              color: Colors.brown.shade400,
+            ),
             title: Text(
               'list positions',
               style: RajdhaniMedium(
                 fontSize: 24,
-                color: Colors.grey.shade400,
+                color: Colors.brown.shade700,
               ),
             ),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PositionDataViewPage(
+                    positions: appState.portfolio,
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),

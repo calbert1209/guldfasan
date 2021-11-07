@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/app_state.dart';
+import 'package:guldfasan/models/cash_flow.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/models/position_operation.dart';
 import 'package:guldfasan/pages/postion_details_page.dart';
 import 'package:guldfasan/widgets/text_styles.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
+import 'flexible_price_cell.dart';
 
 const PositionCollectionInsets = EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0);
 final String Function(dynamic number) _formatCurrency =
@@ -37,12 +40,13 @@ class PositionCollectionDisplay extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Header(
+        _Header(
           symbol: collection.symbol,
           currentPrice: currentPrice,
+          collection: collection,
         ),
         ...this.collection.positions.map((Position position) {
-          return PositionDisplay(
+          return _PositionDisplay(
             position: position,
             currentPrice: currentPrice,
           );
@@ -52,15 +56,25 @@ class PositionCollectionDisplay extends StatelessWidget {
   }
 }
 
-class Header extends StatelessWidget {
-  Header({required this.symbol, required this.currentPrice});
+class _Header extends StatelessWidget {
+  _Header({
+    required this.symbol,
+    required currentPrice,
+    required collection,
+  })  : this.currentPrice = currentPrice,
+        this.cashFlow = tallyCollectionCashFlow(collection, currentPrice);
 
   final String symbol;
   final double currentPrice;
+  final CashFlow cashFlow;
   final _color = Colors.brown.shade700;
 
   @override
   Widget build(BuildContext context) {
+    final rateOfReturn = cashFlow.rateOfReturn();
+    final rateOfReturnColor = colorForSign(rateOfReturn * 100);
+    final percentReturn = (rateOfReturn * 100).toStringAsFixed(2);
+
     return Container(
       padding: PositionCollectionInsets,
       child: Row(
@@ -73,27 +87,44 @@ class Header extends StatelessWidget {
               color: _color,
             ),
           ),
-          Text(
-            _formatCurrency(currentPrice),
-            style: TextStyle(
-              fontFamily: 'KoHo',
-              fontWeight: FontWeight.w300,
-              fontSize: 28,
-              color: _color,
-            ),
-          ),
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 12.0),
+                child: Text(
+                  '${(percentReturn)}%',
+                  style: TextStyle(
+                    fontFamily: 'KoHo',
+                    fontWeight: FontWeight.w300,
+                    fontSize: 18,
+                    color: rateOfReturnColor,
+                  ),
+                ),
+              ),
+              Text(
+                _formatCurrency(currentPrice),
+                style: TextStyle(
+                  fontFamily: 'KoHo',
+                  fontWeight: FontWeight.w300,
+                  fontSize: 28,
+                  color: _color,
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );
   }
 }
 
-class PositionDisplay extends StatelessWidget {
-  PositionDisplay({
+class _PositionDisplay extends StatelessWidget {
+  _PositionDisplay({
     Key? key,
     required this.position,
     required this.currentPrice,
-  }) : diff = (currentPrice - position.price) * position.units;
+  })  : diff = (currentPrice - position.price) * position.units,
+        super(key: key);
 
   final Position position;
   final double currentPrice;
@@ -156,48 +187,6 @@ class PositionDisplay extends StatelessWidget {
                 ],
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class FlexiblePriceCell extends StatelessWidget {
-  FlexiblePriceCell({
-    required this.text,
-    this.color = Colors.black,
-    this.textAlign = TextAlign.right,
-    this.fontSize = 24.0,
-    this.padding = EdgeInsets.zero,
-    this.family = "KoHo",
-    this.weight = FontWeight.w300,
-  });
-
-  final Color color;
-  final String text;
-  final TextAlign textAlign;
-  final double fontSize;
-  final EdgeInsets padding;
-  final String family;
-  final FontWeight weight;
-
-  @override
-  Widget build(BuildContext context) {
-    return Flexible(
-      fit: FlexFit.tight,
-      flex: 1,
-      child: Padding(
-        padding: padding,
-        child: Text(
-          text,
-          textAlign: textAlign,
-          style: TextStyle(
-            fontFamily: 'KoHo',
-            fontWeight: weight,
-            fontSize: fontSize,
-            letterSpacing: -0.6,
-            color: color,
           ),
         ),
       ),
