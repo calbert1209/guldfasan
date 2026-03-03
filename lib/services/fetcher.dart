@@ -3,6 +3,7 @@ import 'dart:isolate';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
+import 'package:html/parser.dart' as html_parser;
 
 class FetchedMessage {
   FetchedMessage({this.sendPort, this.prices, this.error});
@@ -28,6 +29,47 @@ Future<http.Response> _fetchCoinData() {
   return http.get(url);
 }
 
+Future<http.Response> _fetchGoldData() {
+  final url = Uri.https(
+    "gold.tanaka.co.jp",
+    "/commodity/souba/index.php",
+  );
+  return http.get(url);
+}
+
+Map<String, int?> _parseGoldPrices(String body) {
+  final doc = html_parser.parse(body);
+  final goldRow = doc.querySelector('#metal_price tr.gold');
+  if (goldRow == null) {
+    throw StateError('gold row not found');
+  }
+
+  String clean(String? s) => (s ?? '')
+      .replaceAll(RegExp(r'\s+'), ' ')
+      .replaceAll(",", "")
+      .replaceAll(" 円", "")
+      .trim();
+
+  final retailStr =
+      clean(goldRow.querySelector('td.retail_tax')?.text); // 29755
+  final buyStr = clean(goldRow.querySelector('td.purchase_tax')?.text); // 29398
+
+  return {
+    'retail': int.tryParse(retailStr),
+    'buy': int.tryParse(buyStr),
+  };
+}
+
+Map<String, int?> _parseCoinPrices(String body) {
+  var jsonResponse = convert.jsonDecode(body) as Map<String, dynamic>;
+  var btcJpy = jsonResponse["bitcoin"]?["jpy"] as int?;
+  var ethJpy = jsonResponse["ethereum"]?["jpy"] as int?;
+  return {
+    'BTC': btcJpy,
+    'ETH': ethJpy,
+  };
+}
+
 void fetcher(SendPort toParent) async {
   final fromParent = ReceivePort();
   toParent.send(FetchedMessage(sendPort: fromParent.sendPort));
@@ -37,15 +79,17 @@ void fetcher(SendPort toParent) async {
   var executeFetch = () async {
     try {
       var response = await _fetchCoinData();
-      if (response.statusCode == 200) {
-        var jsonResponse =
-            convert.jsonDecode(response.body) as Map<String, dynamic>;
-        var btcJpy = jsonResponse["bitcoin"]?["jpy"] as int?;
-        var ethJpy = jsonResponse["ethereum"]?["jpy"] as int?;
-        var result = (btcJpy != null && ethJpy != null)
+      var goldResponse = await _fetchGoldData();
+      if (response.statusCode == 200 && goldResponse.statusCode == 200) {
+        var goldPrices = _parseGoldPrices(goldResponse.body);
+        var coinPrices = _parseCoinPrices(response.body);
+        var btcJpy = coinPrices['BTC'];
+        var ethJpy = coinPrices['ETH'];
+        var xauJpy = goldPrices['buy'];
+        var result = (btcJpy != null && ethJpy != null && xauJpy != null)
             ? FetchedMessage(
                 sendPort: fromParent.sendPort,
-                prices: {'BTC': btcJpy, 'ETH': ethJpy},
+                prices: {'BTC': btcJpy, 'ETH': ethJpy, 'XAU': xauJpy},
               )
             : FetchedMessage(
                 sendPort: fromParent.sendPort,
