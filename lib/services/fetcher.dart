@@ -29,12 +29,33 @@ Future<http.Response> _fetchCoinData() {
   return http.get(url);
 }
 
-Future<http.Response> _fetchGoldData() {
+const _goldCacheTtl = Duration(minutes: 30);
+Map<String, int?>? _goldPricesCache;
+DateTime? _goldPricesCacheFetchedAt;
+
+Future<Map<String, int?>> _fetchGoldData() async {
+  final now = DateTime.now();
+  final hasValidCache = _goldPricesCache != null &&
+      _goldPricesCacheFetchedAt != null &&
+      now.difference(_goldPricesCacheFetchedAt!) < _goldCacheTtl;
+
+  if (hasValidCache) {
+    return _goldPricesCache!;
+  }
+
   final url = Uri.https(
     "gold.tanaka.co.jp",
     "/commodity/souba/index.php",
   );
-  return http.get(url);
+  final response = await http.get(url);
+  if (response.statusCode != 200) {
+    throw StateError('gold request failed ${response.statusCode}');
+  }
+
+  final parsed = _parseGoldPrices(response.body);
+  _goldPricesCache = parsed;
+  _goldPricesCacheFetchedAt = now;
+  return parsed;
 }
 
 Map<String, int?> _parseGoldPrices(String body) {
@@ -74,14 +95,14 @@ void fetcher(SendPort toParent) async {
   final fromParent = ReceivePort();
   toParent.send(FetchedMessage(sendPort: fromParent.sendPort));
 
-  var duration = Duration(milliseconds: 500);
+  var duration = Duration(seconds: 30);
 
   var executeFetch = () async {
     try {
       var response = await _fetchCoinData();
-      var goldResponse = await _fetchGoldData();
-      if (response.statusCode == 200 && goldResponse.statusCode == 200) {
-        var goldPrices = _parseGoldPrices(goldResponse.body);
+      var goldPrices = await _fetchGoldData();
+
+      if (response.statusCode == 200) {
         var coinPrices = _parseCoinPrices(response.body);
         var btcJpy = coinPrices['BTC'];
         var ethJpy = coinPrices['ETH'];
