@@ -19,7 +19,8 @@ class CurrencyDropdown extends StatelessWidget {
       ),
       initialValue: value,
       onChanged: onChanged,
-      items: ['BTC', 'ETH'].map<DropdownMenuItem<String>>((String value) {
+      items:
+          ['BTC', 'ETH', 'XAU'].map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(
