@@ -16,5 +16,5 @@ var _retry = {
 /// Creates a custom MaterialColor based on `Colors.amber`, with the primary color
 /// set to `amber.shade700`
 MaterialColor customAmber() {
-  return MaterialColor(Colors.amber.shade700.value, _retry);
+  return MaterialColor(Colors.amber.shade700.toARGB32(), _retry);
 }
