@@ -67,14 +67,16 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final rateOfReturn = cashFlow.rateOfReturn();
+    final rateOfReturn = cashFlow.cashIn > 0 ? cashFlow.rateOfReturn() : 0.0;
     final rateOfReturnColor = colorForSign(rateOfReturn * 100);
     final percentReturn = (rateOfReturn * 100).toStringAsFixed(2);
+    final totalCurrentValue = cashFlow.cashOut;
 
     return Container(
       padding: PositionCollectionInsets,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
         children: [
           Text(
             symbol,
@@ -83,31 +85,28 @@ class _Header extends StatelessWidget {
               color: _color,
             ),
           ),
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 12.0),
-                child: Text(
-                  '${(percentReturn)}%',
-                  style: TextStyle(
-                    fontFamily: 'KoHo',
-                    fontWeight: FontWeight.w300,
-                    fontSize: 18,
-                    color: rateOfReturnColor,
-                  ),
-                ),
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Text(
+              formatPrice(totalCurrentValue),
+              style: TextStyle(
+                fontFamily: 'KoHo',
+                fontWeight: FontWeight.w300,
+                fontSize: 28,
+                color: _color,
               ),
-              Text(
-                formatPrice(currentPrice),
-                style: TextStyle(
-                  fontFamily: 'KoHo',
-                  fontWeight: FontWeight.w300,
-                  fontSize: 28,
-                  color: _color,
-                ),
-              ),
-            ],
-          )
+            ),
+          ),
+          const Spacer(),
+          Text(
+            '${percentReturn}%',
+            style: TextStyle(
+              fontFamily: 'KoHo',
+              fontWeight: FontWeight.w300,
+              fontSize: 18,
+              color: rateOfReturnColor,
+            ),
+          ),
         ],
       ),
     );
