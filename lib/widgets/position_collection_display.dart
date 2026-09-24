@@ -42,7 +42,7 @@ class PositionCollectionDisplay extends StatelessWidget {
           currentPrice: currentPrice,
           collection: collection,
         ),
-        ...this.collection.positions.map((Position position) {
+        ...this.collection.byDate().map((Position position) {
           return _PositionDisplay(
             position: position,
             currentPrice: currentPrice,

@@ -9,17 +9,28 @@ class DateTimeFormField extends StatelessWidget {
     Key? key,
     required this.dateTime,
     required this.onChange,
+    this.firstDate,
+    this.lastDate,
   }) : super(key: key);
 
   final DateTime dateTime;
   final OnChangedHandler onChange;
+  final DateTime? firstDate;
+  final DateTime? lastDate;
 
   Future<void> _onTap(BuildContext context) async {
+    final effectiveFirstDate = firstDate ?? DateTime(1970, 1, 1);
+    final effectiveLastDate = lastDate ?? DateTime(2100, 12, 31);
+
+    final clampedInitialDate = dateTime.isBefore(effectiveFirstDate)
+        ? effectiveFirstDate
+        : (dateTime.isAfter(effectiveLastDate) ? effectiveLastDate : dateTime);
+
     var nextDate = await showDatePicker(
       context: context,
-      initialDate: dateTime,
-      firstDate: DateUtils.addMonthsToMonthDate(dateTime, -12),
-      lastDate: DateUtils.addMonthsToMonthDate(dateTime, 12),
+      initialDate: clampedInitialDate,
+      firstDate: effectiveFirstDate,
+      lastDate: effectiveLastDate,
     );
 
     if (nextDate == null) {

@@ -132,5 +132,43 @@ void main() {
         expect(asc.map((p) => p.price).toList(), [10.2, 10.5, 10.8]);
       });
     });
+
+    group('byDate', () {
+      final pos1 = Position(
+        id: 1,
+        symbol: 'BTC',
+        units: 1.0,
+        price: 1000,
+        dateTime: DateTime(2021, 5, 1),
+      );
+      final pos2 = Position(
+        id: 2,
+        symbol: 'BTC',
+        units: 1.0,
+        price: 1000,
+        dateTime: DateTime(2019, 1, 1),
+      );
+      final pos3 = Position(
+        id: 3,
+        symbol: 'BTC',
+        units: 1.0,
+        price: 1000,
+        dateTime: DateTime(2023, 10, 1),
+      );
+      final collection = PositionCollection(
+        symbol: 'BTC',
+        positions: [pos1, pos2, pos3],
+      );
+
+      test('should sort positions from oldest to newest by default', () {
+        final sorted = collection.byDate();
+        expect(sorted.map((p) => p.id).toList(), [2, 1, 3]);
+      });
+
+      test('should sort positions from newest to oldest with desc: true', () {
+        final sorted = collection.byDate(desc: true);
+        expect(sorted.map((p) => p.id).toList(), [3, 1, 2]);
+      });
+    });
   });
 }

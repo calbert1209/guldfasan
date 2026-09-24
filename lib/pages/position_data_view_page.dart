@@ -18,9 +18,15 @@ class PositionDataViewPage extends StatelessWidget {
             if (snapshot.hasError) {
               return Text('error: ${snapshot.error}');
             } else if (snapshot.hasData && snapshot.data != null) {
+              final sortedCollections = snapshot.data!.toList()
+                ..sort((a, b) {
+                  final cmp =
+                      a.symbol.toLowerCase().compareTo(b.symbol.toLowerCase());
+                  return cmp != 0 ? cmp : a.symbol.compareTo(b.symbol);
+                });
               final positions = <Position>[];
-              for (var collection in snapshot.data!) {
-                positions.addAll(collection.positions);
+              for (var collection in sortedCollections) {
+                positions.addAll(collection.byDate());
               }
               return ListView(
                 children: [

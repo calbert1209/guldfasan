@@ -53,6 +53,12 @@ class PositionCollection {
     return positions.sublist(0)
       ..sort((a, b) => a.price.compareTo(b.price) * sign);
   }
+
+  List<Position> byDate({bool desc = false}) {
+    int sign = desc ? -1 : 1;
+    return positions.sublist(0)
+      ..sort((a, b) => a.dateTime.compareTo(b.dateTime) * sign);
+  }
 }
 
 Iterable<Map<String, dynamic>> kDummyEntriesJson = [

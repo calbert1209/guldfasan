@@ -43,7 +43,15 @@ class AppState with ChangeNotifier {
         return map;
       },
     );
-    return map.values;
+    final collections = map.values.toList()
+      ..sort((a, b) {
+        final cmp = a.symbol.toLowerCase().compareTo(b.symbol.toLowerCase());
+        return cmp != 0 ? cmp : a.symbol.compareTo(b.symbol);
+      });
+    for (var collection in collections) {
+      collection.positions.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+    }
+    return collections;
   }
 
   Future<int> addPosition(Position position) async {

@@ -11,6 +11,12 @@ class Portfolio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sortedPortfolio = _portfolio.toList()
+      ..sort((a, b) {
+        final cmp = a.symbol.toLowerCase().compareTo(b.symbol.toLowerCase());
+        return cmp != 0 ? cmp : a.symbol.compareTo(b.symbol);
+      });
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -19,7 +25,7 @@ class Portfolio extends StatelessWidget {
           portfolio: _portfolio,
           prices: _prices,
         ),
-        ..._portfolio.map((collection) {
+        ...sortedPortfolio.map((collection) {
           final currentPrice = _prices?[collection.symbol]?.toDouble();
           return PositionCollectionDisplay(
             collection: collection,
