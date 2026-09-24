@@ -41,27 +41,33 @@ class HomePage extends StatelessWidget {
       ),
       endDrawerEnableOpenDragGesture: false,
       endDrawer: HomePageEndDrawer(),
-      body: ListView(
-        padding: EdgeInsets.only(bottom: 80.0),
-        children: [
-          FutureBuilder(
-            future: appState.portfolio,
-            builder: (BuildContext context,
-                AsyncSnapshot<Iterable<PositionCollection>> snapshot) {
-              if (snapshot.hasError) {
-                return Text(
-                  snapshot.error.toString(),
-                );
-              } else if (snapshot.hasData) {
-                return PortfolioStreamBuilder(snapshot.data!);
-              } else {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            },
-          ),
-        ],
+      body: RefreshIndicator(
+        color: theme.primaryColor,
+        backgroundColor: Colors.brown.shade50,
+        onRefresh: () => appState.refreshPrices(),
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.only(bottom: 80.0),
+          children: [
+            FutureBuilder(
+              future: appState.portfolio,
+              builder: (BuildContext context,
+                  AsyncSnapshot<Iterable<PositionCollection>> snapshot) {
+                if (snapshot.hasError) {
+                  return Text(
+                    snapshot.error.toString(),
+                  );
+                } else if (snapshot.hasData) {
+                  return PortfolioStreamBuilder(snapshot.data!);
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(
@@ -70,7 +76,7 @@ class HomePage extends StatelessWidget {
         ),
         backgroundColor: theme.primaryColor,
         onPressed: () {
-          appState.triggerImmediateFetch();
+          appState.refreshPrices();
         },
       ),
     );

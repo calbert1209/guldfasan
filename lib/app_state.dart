@@ -71,4 +71,15 @@ class AppState with ChangeNotifier {
       fromWorker?.send("immediate");
     }
   }
+
+  Future<void> refreshPrices({Duration timeout = const Duration(seconds: 10)}) async {
+    final nextMessage = stream.first.timeout(timeout);
+    triggerImmediateFetch();
+    try {
+      await nextMessage;
+    } catch (_) {
+      // Timeout or stream error: gracefully complete so spinner dismisses
+    }
+    notifyListeners();
+  }
 }
