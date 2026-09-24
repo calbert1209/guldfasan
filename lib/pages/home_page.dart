@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/app_state.dart';
-import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/widgets/portfolio_stream_builder.dart';
 import 'package:guldfasan/widgets/text_styles.dart';
 import 'package:provider/provider.dart';
@@ -49,23 +48,16 @@ class HomePage extends StatelessWidget {
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.only(bottom: 80.0),
           children: [
-            FutureBuilder(
-              future: appState.portfolio,
-              builder: (BuildContext context,
-                  AsyncSnapshot<Iterable<PositionCollection>> snapshot) {
-                if (snapshot.hasError) {
-                  return Text(
-                    snapshot.error.toString(),
-                  );
-                } else if (snapshot.hasData) {
-                  return PortfolioStreamBuilder(snapshot.data!);
-                } else {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
-            ),
+            if (appState.portfolioError != null)
+              Text(
+                appState.portfolioError.toString(),
+              )
+            else if (appState.portfolioCached != null)
+              PortfolioStreamBuilder(appState.portfolioCached!)
+            else
+              Center(
+                child: CircularProgressIndicator(),
+              ),
           ],
         ),
       ),

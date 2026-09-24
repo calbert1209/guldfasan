@@ -16,6 +16,7 @@ class AppState with ChangeNotifier {
       }
       _controller.add(message);
     });
+    loadPortfolio();
   }
 
   final DatabaseService dbService;
@@ -24,51 +25,84 @@ class AppState with ChangeNotifier {
   final StreamController<FetchedMessage> _controller =
       StreamController.broadcast();
 
-  Future<Iterable<PositionCollection>> get portfolio async {
-    var positionMaps = await dbService.queryAll();
-    print("got data from db. entry count: ${positionMaps.length}");
-    var map = positionMaps
-        .map((entry) => Position.fromMap(entry))
-        .fold<Map<String, PositionCollection>>(
-      Map<String, PositionCollection>(),
-      (map, entry) {
-        if (!map.containsKey(entry.symbol)) {
-          map[entry.symbol] = PositionCollection(
-            symbol: entry.symbol,
-            positions: [],
-          );
-        }
+  Iterable<PositionCollection>? _portfolio;
+  Future<Iterable<PositionCollection>>? _portfolioFuture;
+  Object? _portfolioError;
+  bool _isLoadingPortfolio = false;
 
-        map[entry.symbol]!.positions.add(entry);
-        return map;
-      },
-    );
-    final collections = map.values.toList()
-      ..sort((a, b) {
-        final cmp = a.symbol.toLowerCase().compareTo(b.symbol.toLowerCase());
-        return cmp != 0 ? cmp : a.symbol.compareTo(b.symbol);
-      });
-    for (var collection in collections) {
-      collection.positions.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+  Iterable<PositionCollection>? get portfolioCached => _portfolio;
+  bool get isLoadingPortfolio => _isLoadingPortfolio;
+  Object? get portfolioError => _portfolioError;
+
+  Future<Iterable<PositionCollection>> get portfolio {
+    if (_portfolio != null && !_isLoadingPortfolio) {
+      return Future.value(_portfolio!);
     }
-    return collections;
+    return _portfolioFuture ?? loadPortfolio();
+  }
+
+  Future<Iterable<PositionCollection>> loadPortfolio() {
+    _isLoadingPortfolio = true;
+    _portfolioFuture = _fetchPortfolio();
+    return _portfolioFuture!;
+  }
+
+  Future<Iterable<PositionCollection>> _fetchPortfolio() async {
+    try {
+      var positionMaps = await dbService.queryAll();
+      print("got data from db. entry count: ${positionMaps.length}");
+      var map = positionMaps
+          .map((entry) => Position.fromMap(entry))
+          .fold<Map<String, PositionCollection>>(
+        Map<String, PositionCollection>(),
+        (map, entry) {
+          if (!map.containsKey(entry.symbol)) {
+            map[entry.symbol] = PositionCollection(
+              symbol: entry.symbol,
+              positions: [],
+            );
+          }
+
+          map[entry.symbol]!.positions.add(entry);
+          return map;
+        },
+      );
+      final collections = map.values.toList()
+        ..sort((a, b) {
+          final cmp = a.symbol.toLowerCase().compareTo(b.symbol.toLowerCase());
+          return cmp != 0 ? cmp : a.symbol.compareTo(b.symbol);
+        });
+      for (var collection in collections) {
+        collection.positions.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+      }
+      _portfolio = collections;
+      _portfolioError = null;
+      _isLoadingPortfolio = false;
+      notifyListeners();
+      return collections;
+    } catch (e) {
+      _portfolioError = e;
+      _isLoadingPortfolio = false;
+      notifyListeners();
+      return _portfolio ?? [];
+    }
   }
 
   Future<int> addPosition(Position position) async {
     var nextIndex = await dbService.insert(position);
-    notifyListeners();
+    await loadPortfolio();
     return nextIndex;
   }
 
   Future<int> deletePosition(int id) async {
     var result = await dbService.delete(id);
-    notifyListeners();
+    await loadPortfolio();
     return result;
   }
 
   Future<int> updatePosition(Position position) async {
     var result = await dbService.update(position);
-    notifyListeners();
+    await loadPortfolio();
     return result;
   }
 
