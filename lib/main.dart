@@ -10,11 +10,11 @@ import 'package:guldfasan/pages/home_page.dart';
 
 final ReceivePort mainReceivePort = new ReceivePort();
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await Isolate.spawn(fetcher, mainReceivePort.sendPort);
   final dbService = DatabaseService();
   runApp(App(dbService));
+  Isolate.spawn(fetcher, mainReceivePort.sendPort);
 }
 
 /*
