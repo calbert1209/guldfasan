@@ -4,6 +4,7 @@ import 'package:guldfasan/models/cash_flow.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/models/position_operation.dart';
 import 'package:guldfasan/pages/postion_details_page.dart';
+import 'package:guldfasan/utils/formatters.dart';
 import 'package:guldfasan/widgets/text_styles.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -11,11 +12,6 @@ import 'package:provider/provider.dart';
 import 'flexible_price_cell.dart';
 
 const PositionCollectionInsets = EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0);
-final String Function(dynamic number) _formatCurrency =
-    NumberFormat.simpleCurrency(
-  locale: "en-US",
-  name: "JPY",
-).format;
 
 Color colorForSign(num value) {
   if (value < 0) {
@@ -102,7 +98,7 @@ class _Header extends StatelessWidget {
                 ),
               ),
               Text(
-                _formatCurrency(currentPrice),
+                formatPrice(currentPrice),
                 style: TextStyle(
                   fontFamily: 'KoHo',
                   fontWeight: FontWeight.w300,
@@ -181,7 +177,7 @@ class _PositionDisplay extends StatelessWidget {
                     color: Colors.brown.shade300,
                   ),
                   FlexiblePriceCell(
-                    text: '${_formatCurrency(diff)}',
+                    text: formatPrice(diff),
                     color: diffColor,
                   ),
                 ],

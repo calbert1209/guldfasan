@@ -2,18 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/models/position_operation.dart';
 import 'package:guldfasan/pages/edit_position_page.dart';
+import 'package:guldfasan/utils/formatters.dart';
 import 'package:guldfasan/widgets/bottom_nav_bar.dart';
 import 'package:guldfasan/widgets/position_collection_display.dart';
 import 'package:guldfasan/widgets/sub_page_scaffold.dart';
 import 'package:guldfasan/widgets/text_styles.dart';
 import 'package:intl/intl.dart';
-
-final String Function(dynamic number) _formatDecimalCurrency =
-    NumberFormat.simpleCurrency(
-  locale: "en-US",
-  name: "JPY",
-  decimalDigits: 3,
-).format;
 
 class PositionDetailsPage extends StatelessWidget {
   PositionDetailsPage({required this.position, required this.currentPrice});
@@ -120,7 +114,7 @@ class PurchaseValue extends StatelessWidget {
         Padding(
           padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
           child: Text(
-            _formatDecimalCurrency(valueAtPurchase),
+            formatDecimalPrice(valueAtPurchase),
             style: KoHoMedium(
               fontSize: 40.0,
               color: Colors.brown.shade700,
@@ -142,12 +136,6 @@ class PurchaseValueBreakDown extends StatelessWidget {
   final Position position;
   final double? currentPrice;
 
-  final String Function(dynamic number) _formatCurrency =
-      NumberFormat.simpleCurrency(
-    locale: "en-US",
-    name: "JPY",
-  ).format;
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -159,7 +147,7 @@ class PurchaseValueBreakDown extends StatelessWidget {
           position.units.toString(),
           ' ${position.symbol}',
           ' @ ',
-          _formatCurrency(currentPrice ?? position.price),
+          formatPrice(currentPrice ?? position.price),
           // ' ) ',
         ].map<Widget>((it) {
           return Text(
@@ -268,7 +256,7 @@ class DetailsHeader extends StatelessWidget {
         Padding(
           padding: padding,
           child: Text(
-            _formatDecimalCurrency(totalProfit),
+            formatDecimalPrice(totalProfit),
             style: TextStyle(
               fontFamily: family,
               fontSize: size,
