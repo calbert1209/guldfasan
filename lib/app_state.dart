@@ -14,8 +14,11 @@ class AppState with ChangeNotifier {
       : this.connectivity = connectivity ?? Connectivity() {
     this.receivePort.listen((message) {
       if (message is FetchedMessage && message.hasSendPort()) {
+        final isFirstHandshake = fromWorker == null;
         fromWorker = message.sendPort!;
-        updateIsolateDuration(fromWorker!);
+        if (isFirstHandshake) {
+          updateIsolateDuration(fromWorker!);
+        }
       }
       _controller.add(message);
     });
@@ -29,7 +32,17 @@ class AppState with ChangeNotifier {
     } catch (_) {
       // Platform channels unavailable in headless test environments
     }
-    loadPortfolio();
+    try {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_portfolio == null &&
+            !_isLoadingPortfolio &&
+            _portfolioFuture == null) {
+          loadPortfolio();
+        }
+      });
+    } catch (_) {
+      loadPortfolio();
+    }
   }
 
   final DatabaseService dbService;
@@ -140,17 +153,24 @@ class AppState with ChangeNotifier {
     notifyListeners();
   }
 
+  Duration? _currentWorkerDuration;
+
   Future<void> updateIsolateDuration(SendPort sendPort,
       {List<ConnectivityResult>? results}) async {
     try {
       final connectivityResults =
           results ?? await connectivity.checkConnectivity();
+      final Duration newDuration;
       if (connectivityResults.contains(ConnectivityResult.wifi)) {
-        sendPort.send(const Duration(seconds: 30));
+        newDuration = const Duration(seconds: 30);
       } else if (connectivityResults.contains(ConnectivityResult.mobile)) {
-        sendPort.send(const Duration(seconds: 60));
+        newDuration = const Duration(seconds: 60);
       } else {
-        sendPort.send(const Duration(seconds: 120));
+        newDuration = const Duration(seconds: 120);
+      }
+      if (_currentWorkerDuration != newDuration) {
+        _currentWorkerDuration = newDuration;
+        sendPort.send(newDuration);
       }
     } catch (_) {
       // In headless test environments or when connectivity platform channel is unavailable, do nothing
