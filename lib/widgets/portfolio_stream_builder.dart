@@ -1,6 +1,3 @@
-import 'dart:isolate';
-
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/services/fetcher.dart';
@@ -11,23 +8,6 @@ import 'package:provider/provider.dart';
 import '../app_state.dart';
 
 final _formatDate = DateFormat("yyyy-MM-dd HH:mm:ss").format;
-
-Future<void> updateIsolateDuration(SendPort sendPort) async {
-  var type = await Connectivity().checkConnectivity();
-  if (type == ConnectivityResult.wifi) {
-    sendPort.send(Duration(seconds: 30));
-  } else if (type == ConnectivityResult.mobile) {
-    sendPort.send(Duration(seconds: 60));
-  } else {
-    sendPort.send(Duration(seconds: 120));
-  }
-}
-
-bool snapshotHasSendPort(dynamic data) {
-  return data is Map<String, dynamic> &&
-      data.containsKey('port') &&
-      data['port'] is SendPort;
-}
 
 class PortfolioStreamBuilder extends StatelessWidget {
   PortfolioStreamBuilder(this._portfolio);
@@ -50,9 +30,6 @@ class PortfolioStreamBuilder extends StatelessWidget {
             priceData = snapshot.data!.prices;
           }
           timestamp = _formatDate(DateTime.now());
-          if (snapshot.data!.hasSendPort()) {
-            updateIsolateDuration(snapshot.data!.sendPort!);
-          }
         }
         return Column(
           children: [

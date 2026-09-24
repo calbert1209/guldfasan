@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:isolate';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/services/db.dart';
@@ -9,18 +10,32 @@ import 'package:guldfasan/services/fetcher.dart';
 // NOTE Piping ReceivePort through StreamController prevents nasty error on re-render
 // SEE: https://stackoverflow.com/a/64978367
 class AppState with ChangeNotifier {
-  AppState(this.dbService, this.receivePort) {
+  AppState(this.dbService, this.receivePort, {Connectivity? connectivity})
+      : this.connectivity = connectivity ?? Connectivity() {
     this.receivePort.listen((message) {
       if (message is FetchedMessage && message.hasSendPort()) {
         fromWorker = message.sendPort!;
+        updateIsolateDuration(fromWorker!);
       }
       _controller.add(message);
     });
+    try {
+      _connectivitySubscription =
+          this.connectivity.onConnectivityChanged.listen((results) {
+        if (fromWorker != null) {
+          updateIsolateDuration(fromWorker!, results: results);
+        }
+      });
+    } catch (_) {
+      // Platform channels unavailable in headless test environments
+    }
     loadPortfolio();
   }
 
   final DatabaseService dbService;
   final ReceivePort receivePort;
+  final Connectivity connectivity;
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
   SendPort? fromWorker;
   final StreamController<FetchedMessage> _controller =
       StreamController.broadcast();
@@ -123,5 +138,29 @@ class AppState with ChangeNotifier {
       // Timeout or stream error: gracefully complete so spinner dismisses
     }
     notifyListeners();
+  }
+
+  Future<void> updateIsolateDuration(SendPort sendPort,
+      {List<ConnectivityResult>? results}) async {
+    try {
+      final connectivityResults =
+          results ?? await connectivity.checkConnectivity();
+      if (connectivityResults.contains(ConnectivityResult.wifi)) {
+        sendPort.send(const Duration(seconds: 30));
+      } else if (connectivityResults.contains(ConnectivityResult.mobile)) {
+        sendPort.send(const Duration(seconds: 60));
+      } else {
+        sendPort.send(const Duration(seconds: 120));
+      }
+    } catch (_) {
+      // In headless test environments or when connectivity platform channel is unavailable, do nothing
+    }
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription?.cancel();
+    _controller.close();
+    super.dispose();
   }
 }

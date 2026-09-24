@@ -49,7 +49,7 @@ void main() {
       // Listen for "immediate" signal on worker port
       final workerMessageCompleter = Completer<dynamic>();
       workerReceivePort.listen((message) {
-        if (!workerMessageCompleter.isCompleted) {
+        if (message == 'immediate' && !workerMessageCompleter.isCompleted) {
           workerMessageCompleter.complete(message);
         }
       });
@@ -148,7 +148,7 @@ void main() {
 
         final workerMessageCompleter = Completer<dynamic>();
         workerReceivePort.listen((message) {
-          if (!workerMessageCompleter.isCompleted) {
+          if (message == 'immediate' && !workerMessageCompleter.isCompleted) {
             workerMessageCompleter.complete(message);
           }
         });
