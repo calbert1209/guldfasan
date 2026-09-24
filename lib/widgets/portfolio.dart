@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/widgets/position_collection_display.dart';
 import 'package:guldfasan/widgets/total_profit.dart';
+import 'package:shimmer/shimmer.dart';
 
 class Portfolio extends StatelessWidget {
   Portfolio(this._portfolio, this._prices);
@@ -17,7 +18,7 @@ class Portfolio extends StatelessWidget {
         return cmp != 0 ? cmp : a.symbol.compareTo(b.symbol);
       });
 
-    return Column(
+    final content = Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -34,5 +35,15 @@ class Portfolio extends StatelessWidget {
         }).toList(),
       ],
     );
+
+    if (_prices == null) {
+      return Shimmer.fromColors(
+        baseColor: Colors.brown.shade100,
+        highlightColor: Colors.brown.shade50,
+        child: content,
+      );
+    }
+
+    return content;
   }
 }

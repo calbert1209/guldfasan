@@ -6,6 +6,7 @@ import 'package:guldfasan/app_state.dart';
 import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/services/db.dart';
 import 'package:guldfasan/widgets/flexible_price_cell.dart';
+import 'package:guldfasan/widgets/portfolio.dart';
 import 'package:guldfasan/widgets/position_collection_display.dart';
 import 'package:guldfasan/widgets/shimmer_skeleton.dart';
 import 'package:guldfasan/widgets/total_profit.dart';
@@ -50,6 +51,31 @@ void main() {
 
       expect(find.descendant(of: finder, matching: find.byType(Shimmer)),
           findsOneWidget);
+    });
+
+    testWidgets('does not instantiate nested Shimmer if ancestor Shimmer is present',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Shimmer.fromColors(
+              baseColor: Colors.brown.shade100,
+              highlightColor: Colors.brown.shade50,
+              child: const ShimmerSkeleton(width: 100.0, height: 30.0),
+            ),
+          ),
+        ),
+      );
+
+      final skeletonFinder = find.byType(ShimmerSkeleton);
+      expect(skeletonFinder, findsOneWidget);
+
+      // Only the ancestor Shimmer should exist, no nested Shimmer inside skeletonFinder
+      expect(find.byType(Shimmer), findsOneWidget);
+      expect(
+        find.descendant(of: skeletonFinder, matching: find.byType(Shimmer)),
+        findsNothing,
+      );
     });
   });
 
@@ -213,6 +239,74 @@ void main() {
       expect(find.byType(ShimmerSkeleton), findsNothing);
       expect(find.text('12,000'), findsOneWidget);
       expect(find.text('50.00%'), findsOneWidget);
+    });
+  });
+
+  group('Portfolio with unified shimmer', () {
+    final positions = [
+      Position(
+        id: 1,
+        symbol: 'BTC',
+        units: 0.002,
+        price: 4000000,
+        dateTime: DateTime(2021, 5, 10),
+      ),
+    ];
+    final portfolio = [
+      PositionCollection(symbol: 'BTC', positions: positions),
+    ];
+
+    testWidgets('wraps entire content in a single Shimmer when prices is null',
+        (WidgetTester tester) async {
+      final dummyReceivePort = ReceivePort();
+      addTearDown(() => dummyReceivePort.close());
+      final appState = AppState(FakeDatabaseService(), dummyReceivePort);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ChangeNotifierProvider<AppState>.value(
+              value: appState,
+              child: Portfolio(portfolio, null),
+            ),
+          ),
+        ),
+      );
+
+      // Verify that there is exactly ONE top-level Shimmer across the entire Portfolio
+      final shimmerFinder = find.byType(Shimmer);
+      expect(shimmerFinder, findsOneWidget);
+
+      final shimmerWidget = tester.widget<Shimmer>(shimmerFinder);
+      expect(shimmerWidget.gradient, isA<LinearGradient>());
+      final gradient = shimmerWidget.gradient as LinearGradient;
+      expect(gradient.colors, contains(Colors.brown.shade100));
+      expect(gradient.colors, contains(Colors.brown.shade50));
+
+      // Child skeletons are rendered inside the tree
+      expect(find.byType(ShimmerSkeleton), findsWidgets);
+    });
+
+    testWidgets('does not wrap content in Shimmer when prices is non-null',
+        (WidgetTester tester) async {
+      final dummyReceivePort = ReceivePort();
+      addTearDown(() => dummyReceivePort.close());
+      final appState = AppState(FakeDatabaseService(), dummyReceivePort);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ChangeNotifierProvider<AppState>.value(
+              value: appState,
+              child: Portfolio(portfolio, const {'BTC': 6000000}),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(Shimmer), findsNothing);
+      expect(find.byType(ShimmerSkeleton), findsNothing);
+      expect(find.text('BTC'), findsOneWidget);
     });
   });
 }

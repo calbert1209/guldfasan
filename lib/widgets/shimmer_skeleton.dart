@@ -24,18 +24,25 @@ class ShimmerSkeleton extends StatelessWidget {
     final effectiveBaseColor = baseColor ?? Colors.brown.shade100;
     final effectiveHighlightColor = highlightColor ?? Colors.brown.shade50;
 
+    final box = Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: effectiveBaseColor,
+        borderRadius: borderRadius,
+      ),
+    );
+
+    // If an ancestor Shimmer is already present, do not create redundant nested controllers
+    if (context.findAncestorWidgetOfExactType<Shimmer>() != null) {
+      return box;
+    }
+
     return Shimmer.fromColors(
       baseColor: effectiveBaseColor,
       highlightColor: effectiveHighlightColor,
       enabled: enabled,
-      child: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          color: effectiveBaseColor,
-          borderRadius: borderRadius,
-        ),
-      ),
+      child: box,
     );
   }
 }
