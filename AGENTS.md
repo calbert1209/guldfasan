@@ -25,3 +25,10 @@ This project utilizes a highly specific and modern Android build configuration. 
 
 ## 4. Version Control
 * `ios/Flutter/ephemeral/` and `android/build/` are explicitly ignored in `.gitignore`. Do not attempt to track files in these directories.
+
+## 5. Testing & Verification Protocol
+Before completing any task or code modification, verify that:
+1. **Static Analysis Passes**: Run `flutter analyze` to ensure zero errors or warnings across the project.
+2. **Headless Tests Pass**: Run `flutter test` to ensure all pure Dart unit and parser tests pass.
+3. **No Heavy/Emulator Dependencies**: All tests in `test/` must remain fast, headless, and independent of running emulators or external live network services (use offline fixtures for HTML/JSON).
+

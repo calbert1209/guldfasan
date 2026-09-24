@@ -24,6 +24,27 @@ void main() {
     });
   });
 
+  group('Position serialization', () {
+    test('round-trip serialization toMap and fromMap', () {
+      final original = Position(
+        id: 42,
+        symbol: 'BTC',
+        units: 1.5,
+        price: 50000.25,
+        dateTime: DateTime.utc(2023, 1, 15, 10, 30),
+      );
+      final map = original.toMap();
+      final restored = Position.fromMap(map);
+
+      expect(restored.id, original.id);
+      expect(restored.symbol, original.symbol);
+      expect(restored.units, original.units);
+      expect(restored.price, original.price);
+      expect(restored.dateTime, original.dateTime);
+      expect(restored.toMap(), map);
+    });
+  });
+
   group('PositionCollection', () {
     group('byPurchasePrice', () {
       var now = DateTime.now();
@@ -73,6 +94,42 @@ void main() {
         var byPriceDescending = collection.byPurchasePrice(desc: false);
         var pricesString = byPriceDescending.map((it) => it.price).join(",");
         expect(pricesString, "9.0,10.0,11.0,12.5");
+      });
+
+      test('should sort fractional prices accurately', () {
+        final fractionalPositions = [
+          Position(
+            id: 201,
+            symbol: 'BTC',
+            units: 1.0,
+            price: 10.2,
+            dateTime: now,
+          ),
+          Position(
+            id: 202,
+            symbol: 'BTC',
+            units: 1.0,
+            price: 10.8,
+            dateTime: now,
+          ),
+          Position(
+            id: 203,
+            symbol: 'BTC',
+            units: 1.0,
+            price: 10.5,
+            dateTime: now,
+          ),
+        ];
+        final col = PositionCollection(
+          symbol: 'BTC',
+          positions: fractionalPositions,
+        );
+
+        final desc = col.byPurchasePrice(desc: true);
+        expect(desc.map((p) => p.price).toList(), [10.8, 10.5, 10.2]);
+
+        final asc = col.byPurchasePrice(desc: false);
+        expect(asc.map((p) => p.price).toList(), [10.2, 10.5, 10.8]);
       });
     });
   });

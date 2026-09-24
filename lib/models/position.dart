@@ -51,7 +51,7 @@ class PositionCollection {
   List<Position> byPurchasePrice({bool desc = true}) {
     int sign = desc ? -1 : 1;
     return positions.sublist(0)
-      ..sort((a, b) => (a.price - b.price).toInt() * sign);
+      ..sort((a, b) => a.price.compareTo(b.price) * sign);
   }
 }
 

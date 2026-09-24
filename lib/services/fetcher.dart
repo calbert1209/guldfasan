@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:isolate';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:html/parser.dart' as html_parser;
@@ -52,13 +53,14 @@ Future<Map<String, int?>> _fetchGoldData() async {
     throw StateError('gold request failed ${response.statusCode}');
   }
 
-  final parsed = _parseGoldPrices(response.body);
+  final parsed = parseGoldPrices(response.body);
   _goldPricesCache = parsed;
   _goldPricesCacheFetchedAt = now;
   return parsed;
 }
 
-Map<String, int?> _parseGoldPrices(String body) {
+@visibleForTesting
+Map<String, int?> parseGoldPrices(String body) {
   final doc = html_parser.parse(body);
   final goldRow = doc.querySelector('#metal_price tr.gold');
   if (goldRow == null) {
@@ -81,7 +83,8 @@ Map<String, int?> _parseGoldPrices(String body) {
   };
 }
 
-Map<String, int?> _parseCoinPrices(String body) {
+@visibleForTesting
+Map<String, int?> parseCoinPrices(String body) {
   var jsonResponse = convert.jsonDecode(body) as Map<String, dynamic>;
   var btcJpy = jsonResponse["bitcoin"]?["jpy"] as int?;
   var ethJpy = jsonResponse["ethereum"]?["jpy"] as int?;
@@ -103,7 +106,7 @@ void fetcher(SendPort toParent) async {
       var goldPrices = await _fetchGoldData();
 
       if (response.statusCode == 200) {
-        var coinPrices = _parseCoinPrices(response.body);
+        var coinPrices = parseCoinPrices(response.body);
         var btcJpy = coinPrices['BTC'];
         var ethJpy = coinPrices['ETH'];
         var xauJpy = goldPrices['buy'];
