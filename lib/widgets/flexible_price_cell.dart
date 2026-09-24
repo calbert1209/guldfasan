@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 
 class FlexiblePriceCell extends StatelessWidget {
   FlexiblePriceCell({
-    required this.text,
+    this.text,
+    this.child,
     this.color = Colors.black,
     this.textAlign = TextAlign.right,
     this.fontSize = 24.0,
     this.padding = EdgeInsets.zero,
     this.family = "KoHo",
     this.weight = FontWeight.w300,
-  });
+  }) : assert(text != null || child != null);
 
   final Color color;
-  final String text;
+  final String? text;
+  final Widget? child;
   final TextAlign textAlign;
   final double fontSize;
   final EdgeInsets padding;
@@ -26,17 +28,18 @@ class FlexiblePriceCell extends StatelessWidget {
       flex: 1,
       child: Padding(
         padding: padding,
-        child: Text(
-          text,
-          textAlign: textAlign,
-          style: TextStyle(
-            fontFamily: 'KoHo',
-            fontWeight: weight,
-            fontSize: fontSize,
-            letterSpacing: -0.6,
-            color: color,
-          ),
-        ),
+        child: child ??
+            Text(
+              text ?? '',
+              textAlign: textAlign,
+              style: TextStyle(
+                fontFamily: 'KoHo',
+                fontWeight: weight,
+                fontSize: fontSize,
+                letterSpacing: -0.6,
+                color: color,
+              ),
+            ),
       ),
     );
   }

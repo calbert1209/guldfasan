@@ -5,6 +5,7 @@ import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/models/position_operation.dart';
 import 'package:guldfasan/pages/postion_details_page.dart';
 import 'package:guldfasan/utils/formatters.dart';
+import 'package:guldfasan/widgets/shimmer_skeleton.dart';
 import 'package:guldfasan/widgets/text_styles.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -25,10 +26,10 @@ Color colorForSign(num value) {
 
 class PositionCollectionDisplay extends StatelessWidget {
   PositionCollectionDisplay(
-      {required this.collection, required this.currentPrice});
+      {required this.collection, this.currentPrice});
 
   final PositionCollection collection;
-  final double currentPrice;
+  final double? currentPrice;
 
   @override
   Widget build(BuildContext context) {
@@ -55,22 +56,53 @@ class PositionCollectionDisplay extends StatelessWidget {
 class _Header extends StatelessWidget {
   _Header({
     required this.symbol,
-    required currentPrice,
-    required collection,
-  })  : this.currentPrice = currentPrice,
-        this.cashFlow = tallyCollectionCashFlow(collection, currentPrice);
+    required this.currentPrice,
+    required PositionCollection collection,
+  })  : this.cashFlow = currentPrice != null
+            ? tallyCollectionCashFlow(collection, currentPrice)
+            : null;
 
   final String symbol;
-  final double currentPrice;
-  final CashFlow cashFlow;
+  final double? currentPrice;
+  final CashFlow? cashFlow;
   final _color = Colors.brown.shade700;
 
   @override
   Widget build(BuildContext context) {
-    final rateOfReturn = cashFlow.cashIn > 0 ? cashFlow.rateOfReturn() : 0.0;
+    if (cashFlow == null) {
+      return Container(
+        padding: PositionCollectionInsets,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              symbol,
+              style: RajdhaniBold(
+                fontSize: 32,
+                color: _color,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 12.0),
+              child: ShimmerSkeleton(
+                width: 80.0,
+                height: 24.0,
+              ),
+            ),
+            const Spacer(),
+            ShimmerSkeleton(
+              width: 50.0,
+              height: 18.0,
+            ),
+          ],
+        ),
+      );
+    }
+
+    final rateOfReturn = cashFlow!.cashIn > 0 ? cashFlow!.rateOfReturn() : 0.0;
     final rateOfReturnColor = colorForSign(rateOfReturn * 100);
     final percentReturn = (rateOfReturn * 100).toStringAsFixed(2);
-    final totalCurrentValue = cashFlow.cashOut;
+    final totalCurrentValue = cashFlow!.cashOut;
 
     return Container(
       padding: PositionCollectionInsets,
@@ -118,17 +150,19 @@ class _PositionDisplay extends StatelessWidget {
     Key? key,
     required this.position,
     required this.currentPrice,
-  })  : diff = (currentPrice - position.price) * position.units,
+  })  : diff = currentPrice != null
+            ? (currentPrice - position.price) * position.units
+            : null,
         super(key: key);
 
   final Position position;
-  final double currentPrice;
-  final double diff;
+  final double? currentPrice;
+  final double? diff;
   final _formatDate = DateFormat('yyyy-MM-dd').format;
 
   @override
   Widget build(BuildContext context) {
-    var diffColor = colorForSign(diff);
+    var diffColor = diff != null ? colorForSign(diff!) : Colors.brown.shade700;
     var appState = Provider.of<AppState>(context);
     return Card(
       shape: RoundedRectangleBorder(
@@ -140,28 +174,30 @@ class _PositionDisplay extends StatelessWidget {
       ),
       elevation: 0.5,
       child: InkWell(
-        onTap: () {
-          Navigator.push<PositionOperation>(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PositionDetailsPage(
-                position: position,
-                currentPrice: currentPrice,
-              ),
-            ),
-          ).then((data) {
-            if (data == null) return;
+        onTap: currentPrice == null
+            ? null
+            : () {
+                Navigator.push<PositionOperation>(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PositionDetailsPage(
+                      position: position,
+                      currentPrice: currentPrice!,
+                    ),
+                  ),
+                ).then((data) {
+                  if (data == null) return;
 
-            if (data.type == OperationType.update) {
-              appState.updatePosition(data.position);
-            } else if (data.type == OperationType.delete) {
-              var id = data.position.id;
-              if (id != null) {
-                appState.deletePosition(id);
-              }
-            }
-          });
-        },
+                  if (data.type == OperationType.update) {
+                    appState.updatePosition(data.position);
+                  } else if (data.type == OperationType.delete) {
+                    var id = data.position.id;
+                    if (id != null) {
+                      appState.deletePosition(id);
+                    }
+                  }
+                });
+              },
         child: Padding(
           padding: PositionCollectionInsets,
           child: Column(
@@ -175,10 +211,20 @@ class _PositionDisplay extends StatelessWidget {
                     fontSize: 20.0,
                     color: Colors.brown.shade300,
                   ),
-                  FlexiblePriceCell(
-                    text: formatPrice(diff),
-                    color: diffColor,
-                  ),
+                  diff != null
+                      ? FlexiblePriceCell(
+                          text: formatPrice(diff!),
+                          color: diffColor,
+                        )
+                      : FlexiblePriceCell(
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: ShimmerSkeleton(
+                              width: 70.0,
+                              height: 20.0,
+                            ),
+                          ),
+                        ),
                 ],
               ),
             ],

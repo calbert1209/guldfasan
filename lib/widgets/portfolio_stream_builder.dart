@@ -40,14 +40,14 @@ class PortfolioStreamBuilder extends StatelessWidget {
     return StreamBuilder<FetchedMessage>(
       stream: appState.stream,
       builder: (BuildContext context, AsyncSnapshot<FetchedMessage> snapshot) {
-        Map<String, int> priceData = {"BTC": -1, "ETH": -1, "XAU": -1};
-        var timestamp = "not updated!";
+        Map<String, int>? priceData;
+        var timestamp = "fetching prices...";
         if (snapshot.hasError) {
           print(snapshot.error);
         }
         if (snapshot.hasData && snapshot.data != null) {
           if (snapshot.data!.hasPrices()) {
-            priceData = snapshot.data!.prices!;
+            priceData = snapshot.data!.prices;
           }
           timestamp = _formatDate(DateTime.now());
           if (snapshot.data!.hasSendPort()) {

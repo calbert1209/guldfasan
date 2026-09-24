@@ -31,10 +31,12 @@ CashFlow tallyPortfolioCashFlow(
 ) {
   var total = new CashFlow(0, 0);
   for (var collection in portfolio) {
-    final currentPrice = prices[collection.symbol]!;
-    final collectionCashFlow =
-        tallyCollectionCashFlow(collection, currentPrice.toDouble());
-    total = total.combine(collectionCashFlow);
+    final currentPrice = prices[collection.symbol];
+    if (currentPrice != null) {
+      final collectionCashFlow =
+          tallyCollectionCashFlow(collection, currentPrice.toDouble());
+      total = total.combine(collectionCashFlow);
+    }
   }
   return total;
 }

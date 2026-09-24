@@ -7,7 +7,7 @@ class Portfolio extends StatelessWidget {
   Portfolio(this._portfolio, this._prices);
 
   final Iterable<PositionCollection> _portfolio;
-  final Map<String, int> _prices;
+  final Map<String, int>? _prices;
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +20,10 @@ class Portfolio extends StatelessWidget {
           prices: _prices,
         ),
         ..._portfolio.map((collection) {
+          final currentPrice = _prices?[collection.symbol]?.toDouble();
           return PositionCollectionDisplay(
             collection: collection,
-            currentPrice: _prices[collection.symbol]!.toDouble(),
+            currentPrice: currentPrice,
           );
         }).toList(),
       ],

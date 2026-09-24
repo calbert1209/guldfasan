@@ -109,7 +109,9 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      // Allow FutureBuilder to resolve without waiting forever on infinite Shimmer animation
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
 
       final refreshIndicatorFinder = find.byType(RefreshIndicator);
       expect(refreshIndicatorFinder, findsOneWidget);
@@ -159,7 +161,8 @@ void main() {
             ),
           ),
         );
-        await tester.pumpAndSettle();
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
 
         final indicator =
             tester.widget<RefreshIndicator>(find.byType(RefreshIndicator));

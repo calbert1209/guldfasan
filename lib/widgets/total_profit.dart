@@ -1,17 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:guldfasan/models/cash_flow.dart';
+import 'package:guldfasan/models/position.dart';
 import 'package:guldfasan/widgets/position_collection_display.dart';
+import 'package:guldfasan/widgets/shimmer_skeleton.dart';
 
 class TotalProfit extends StatelessWidget {
-  TotalProfit({required portfolio, required prices})
-      : cashFlow = tallyPortfolioCashFlow(portfolio, prices);
+  TotalProfit({required this.portfolio, required this.prices})
+      : cashFlow =
+            prices != null ? tallyPortfolioCashFlow(portfolio, prices) : null;
 
-  final CashFlow cashFlow;
+  final Iterable<PositionCollection> portfolio;
+  final Map<String, int>? prices;
+  final CashFlow? cashFlow;
 
   @override
   Widget build(BuildContext context) {
-    final totalProfit = cashFlow.returnOnInvestment();
-    final rateOfReturn = cashFlow.rateOfReturn() * 100;
+    if (cashFlow == null) {
+      return Padding(
+        padding: PositionCollectionInsets,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: const [
+            ShimmerSkeleton(width: 120, height: 42),
+            ShimmerSkeleton(width: 140, height: 42),
+          ],
+        ),
+      );
+    }
+
+    final totalProfit = cashFlow!.returnOnInvestment();
+    final rateOfReturn =
+        cashFlow!.cashIn > 0 ? (cashFlow!.rateOfReturn() * 100) : 0.0;
     var color = colorForSign(totalProfit);
     return Padding(
       padding: PositionCollectionInsets,
